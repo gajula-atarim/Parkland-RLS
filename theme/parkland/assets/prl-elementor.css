@@ -1,0 +1,587 @@
+/**
+ * Parkland - Elementor-native layer.
+ *
+ * The home page is built from real Elementor widgets so the client can edit
+ * text and images in the editor. Widgets wrap their content
+ * (.elementor-element > .elementor-widget-container > h2.elementor-heading-title),
+ * so the Brand Kit values set on the prl-* wrapper classes have to reach the
+ * inner element. Making the inner element inherit is one rule instead of one
+ * override per widget, and it keeps every value in the existing section CSS.
+ */
+
+/* Elementor pins headings to line-height:1 and its own type; let the wrapper win. */
+.elementor-widget-heading :where(.elementor-heading-title){
+  font-family:inherit;font-size:inherit;font-weight:inherit;font-style:inherit;
+  line-height:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit;
+  margin:0;padding:0;
+}
+/* Only the inner container inherits; setting it on the widget wrapper would
+   override each component's own colour. */
+.elementor-widget-text-editor :where(.elementor-widget-container){color:inherit}
+.elementor-widget-text-editor :where(p){
+  font-family:inherit;font-size:inherit;font-weight:inherit;
+  line-height:inherit;color:inherit;margin:0;
+}
+.elementor-widget-text-editor p + p{margin-top:1em}
+
+/* Widget wrappers are block boxes; the design's columns are flex/grid children. */
+.prl-welcome__copy > .elementor-element,
+.prl-keydates__text > .elementor-element,
+.prl-keydates__chip > .elementor-element{width:100%}
+
+/* A heading widget standing in for an inline <span> must not add a line box. */
+.prl-eyebrow .elementor-heading-title,
+.prl-keydates__chip .elementor-heading-title,
+.prl-keydates__text .elementor-heading-title{display:block}
+
+/* ---------------------------------------------------------
+   Links built with the Button widget. The design's "About Us"
+   is a plain underlined text link, not a filled button, so the
+   button chrome is stripped back to the wrapper's own type.
+   --------------------------------------------------------- */
+.prl-welcome__link .elementor-button,
+.prl-welcome__link .elementor-button:hover,
+.prl-welcome__link .elementor-button:focus{
+  background:none;border:0;border-radius:0;padding:0;
+  font-family:inherit;font-size:inherit;font-weight:inherit;
+  line-height:inherit;letter-spacing:inherit;color:inherit;
+  fill:currentColor;box-shadow:none;min-height:0;
+}
+.prl-welcome__link .elementor-button-content-wrapper{gap:0}
+.elementor .prl-welcome__link .elementor-button{text-decoration:underline;text-underline-offset:4px}
+
+/* Key Dates head: heading + icon on one row, icon in the accent colour. */
+.prl-keydates__head{gap:12px}
+.prl-keydates__head > .elementor-element{width:auto}
+.prl-keydates__icon .elementor-icon{color:var(--prl-accent,var(--prl-forest));font-size:22px}
+.prl-keydates__icon .elementor-icon svg{width:22px;height:22px;fill:currentColor}
+
+/* Elementor containers default to flex; these two rely on the section CSS grid. */
+.prl-welcome__grid.e-con{display:grid}
+.prl-keydates__row.e-con{display:grid}
+
+/* =========================================================
+   CONTAINER LAYOUT.
+   Elementor styles containers with `.e-con-full.e-flex,
+   .e-con.e-flex > .e-con-inner { flex-direction: var(--flex-direction) }`
+   at 0,2,0, and every container defaults to --flex-direction:column.
+   The section CSS declares these at 0,1,0 and so never wins, which
+   collapses every grid to a single column. Re-assert at 0,3,0.
+   ========================================================= */
+.elementor .e-con.prl-welcome__grid{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:48px;padding-block:8px 72px;align-items:start;
+}
+.elementor .e-con.prl-sf__grid{
+  display:grid;grid-template-columns:minmax(0,.62fr) minmax(0,1fr);gap:28px;align-items:start;
+}
+.elementor .e-con.prl-around__grid{
+  display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:30px;align-items:start;
+}
+.elementor .e-con.prl-awb{
+  display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1fr) minmax(0,1.2fr);
+}
+.elementor .e-con.prl-events__grid{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:24px;align-items:start;
+}
+.elementor .e-con.prl-stream__grid{
+  display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:18px;
+}
+.elementor .e-con.prl-books__shelf{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;
+}
+.elementor .e-con.prl-donate__card{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+}
+.elementor .e-con.prl-keydates__row{
+  display:grid;grid-template-columns:58px minmax(0,1fr);gap:14px;align-items:center;
+}
+.elementor .e-con.prl-events__chips{flex-direction:row;flex-wrap:wrap;gap:8px}
+.elementor .e-con.prl-quotes__faces{flex-direction:row;gap:12px;align-items:center}
+.elementor .e-con.prl-hours__row{flex-direction:row;justify-content:space-between;gap:12px}
+.elementor .e-con.prl-keydates__head{flex-direction:row;justify-content:space-between;align-items:center}
+.elementor .e-con.prl-around__head{flex-direction:row;align-items:center;gap:14px}
+.elementor .e-con.prl-books__head,
+.elementor .e-con.prl-events__head,
+.elementor .e-con.prl-select__head,
+.elementor .e-con.prl-sf__foot,
+.elementor .e-con.prl-events__foot,
+.elementor .e-con.prl-donate__actions,
+.elementor .e-con.prl-donate__amounts,
+.elementor .e-con.prl-books__tabs,
+.elementor .e-con.prl-events__toggle,
+.elementor .e-con.prl-select__controls,
+.elementor .e-con.prl-hero__controls,
+.elementor .e-con.prl-hero__dots,
+.elementor .e-con.prl-hero__nav,
+.elementor .e-con.prl-donate__badge,
+.elementor .e-con.prl-events__row,
+.elementor .e-con.prl-around__card{flex-direction:row}
+.elementor .e-con.prl-shell{max-width:1180px;margin-inline:auto;padding-inline:var(--prl-gutter,28px)}
+
+/* =========================================================
+   PANEL VISIBILITY.
+   The markup carries no `hidden` attribute any more (Elementor owns
+   the wrapper), so inactive panels, shelves and slides are switched
+   with a class instead.
+   ========================================================= */
+.elementor .e-con.is-hidden,
+.elementor .prl-sf__panel.is-hidden,
+.elementor .prl-books__shelf.is-hidden,
+.elementor .prl-quotes__slide.is-hidden{display:none}
+
+/* The A-Z list starts collapsed, as in the design. */
+.elementor .prl-select__grid{display:none}
+.elementor .prl-select__grid.is-open{display:block}
+.prl-select__grid .elementor-icon-list-items{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px 12px;
+  max-height:300px;overflow:auto;border-top:1px solid var(--prl-rule);padding-top:16px;
+}
+.prl-select__grid .elementor-icon-list-item{margin:0}
+.prl-select__grid .elementor-icon-list-item.is-filtered{display:none}
+
+/* Marquee track is an inline icon-list; the duplicate half is cloned by JS. */
+.prl-marquee__track .elementor-icon-list-items{
+  display:flex;width:max-content;flex-wrap:nowrap;gap:0;
+}
+.prl-marquee__track .elementor-icon-list-item{margin:0}
+
+/* =========================================================
+   BUTTON WIDGETS.
+   Every link, chip, tab and control on this page is a Button widget so the
+   client can edit its text and destination. Elementor gives each one its own
+   background, padding, radius and type; the design's styling already lives on
+   the prl-* wrapper, so strip the chrome and let the wrapper show through.
+   ========================================================= */
+.elementor [class*="prl-"] .elementor-button{
+  background:none;border:0;border-radius:inherit;padding:0;
+  font-family:inherit;font-size:inherit;font-weight:inherit;font-style:inherit;
+  line-height:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit;
+  box-shadow:none;min-height:0;display:flex;align-items:center;justify-content:inherit;
+  gap:8px;width:100%;
+}
+.elementor [class*="prl-"] .elementor-button-wrapper{display:flex}
+.elementor [class*="prl-"] .elementor-button-content-wrapper{gap:8px;align-items:center}
+.elementor [class*="prl-"] .elementor-button-icon svg{width:1em;height:1em;fill:currentColor}
+
+/* Controls whose pill IS the wrapper. */
+.elementor .e-con.prl-chip,
+.elementor .prl-chip,
+.elementor .prl-books__tab,
+.elementor .prl-events__tab,
+.elementor .prl-donate__amt,
+.elementor .prl-select__browse{display:inline-flex;align-items:center;justify-content:center}
+
+/* Primary / ghost buttons keep their fill, so re-assert it on the inner anchor. */
+.elementor .prl-btn--primary .elementor-button{background:var(--prl-forest);color:#fff;padding:11px 22px;border-radius:10px;justify-content:center}
+.elementor .prl-btn--primary .elementor-button:hover{background:var(--prl-forest-hover)}
+.elementor .prl-btn--ghost .elementor-button{background:transparent;color:var(--prl-forest);border:1.5px solid var(--prl-forest);padding:11px 22px;border-radius:10px;justify-content:center}
+.elementor .prl-btn--ghost .elementor-button:hover{background:var(--prl-forest);color:#fff}
+.elementor .prl-donate__cta .elementor-button{background:var(--prl-mint);color:var(--prl-forest-deep);padding:14px 26px;border-radius:999px;font-weight:700;justify-content:center}
+.elementor .prl-hero__cta .elementor-button{background:var(--prl-meadow);color:var(--prl-forest-deep);padding:13px 26px;border-radius:999px;font-weight:700;justify-content:center}
+
+/* Hero dots and arrows are Button widgets with no label. */
+.elementor .prl-hero__dot .elementor-button,
+.elementor .prl-hero__prev .elementor-button,
+.elementor .prl-hero__next .elementor-button{justify-content:center}
+.elementor .prl-hero__dot{width:8px;height:8px;border-radius:999px;background:rgba(255,255,255,.45);transition:width .25s}
+.elementor .prl-hero__dot.is-active{width:30px;background:#fff}
+.elementor .prl-hero__prev,
+.elementor .prl-hero__next{width:48px;height:48px;border-radius:50%;display:inline-flex}
+.elementor .prl-hero__prev{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.4);color:#fff}
+.elementor .prl-hero__next{background:#fff;color:var(--prl-forest)}
+
+
+/* Quote avatars are containers with a background image. */
+.elementor .prl-quotes__face{width:52px;height:52px;border-radius:50%;background-size:cover;background-position:center;
+  border:2px solid rgba(255,255,255,.6);opacity:.7;cursor:pointer;transition:all .25s;flex:none}
+.elementor .prl-quotes__face.is-active{width:72px;height:72px;border:3px solid var(--prl-mint);opacity:1}
+
+/* The marquee row must not wrap; Elementor's inline icon-list sets wrap. */
+.elementor .prl-marquee__track .elementor-icon-list-items{
+  flex-wrap:nowrap;width:max-content;
+}
+.elementor .prl-marquee__track .elementor-icon-list-item{white-space:nowrap}
+
+/* The design's feature shot is 682x240, not 16/8.2. */
+.elementor .prl-sf__shot{aspect-ratio:682/240}
+
+/* =========================================================
+   SECTION 1 - HERO
+   The design puts the dots inline after the CTA, so each slide carries its
+   own dot row and the arrows sit absolute at the section's right edge.
+   ========================================================= */
+/* Elementor pins every widget to `max-width:100%` with
+   `.elementor.elementor .e-con > .elementor-widget` (0,4,0), which drops the
+   design's measures. Re-assert above it. */
+.elementor.elementor .e-con > .elementor-widget.prl-hero__title{max-width:620px}
+.elementor.elementor .e-con > .elementor-widget.prl-hero__text{max-width:500px}
+.elementor.elementor .e-con > .elementor-widget.prl-hero__kicker{max-width:none;width:auto}
+.elementor.elementor .e-con > .elementor-widget.prl-hero__cta{width:auto;max-width:none}
+
+.elementor .prl-hero__kicker{align-self:flex-start}
+.elementor .prl-hero__kicker .elementor-heading-title{display:inline-block}
+.elementor .e-con.prl-hero__actions{
+  flex-direction:row;align-items:center;gap:14px;margin-top:8px;
+  width:auto;pointer-events:auto;
+}
+/* The wrapper is the hit area; the pill itself is the inner anchor. */
+.elementor .prl-hero__cta{padding:0;background:none;border:0}
+.elementor .prl-hero__cta .elementor-button{width:auto;display:inline-flex}
+.elementor .prl-hero__cta .elementor-button:hover{
+  transform:translateY(-2px);box-shadow:0 10px 24px -8px rgba(127,181,97,.8);color:#1B2B17;
+}
+.elementor .e-con.prl-hero__dots{
+  position:static;flex-direction:row;gap:8px;align-items:center;width:auto;pointer-events:auto;
+}
+.elementor .e-con.prl-hero__nav{
+  position:absolute;right:28px;bottom:150px;z-index:3;
+  flex-direction:row;gap:10px;width:auto;pointer-events:auto;
+}
+.elementor .e-con.prl-hero__prev,
+.elementor .e-con.prl-hero__next{
+  width:48px;height:48px;border-radius:50%;cursor:pointer;flex:none;
+  background-position:center;background-repeat:no-repeat;
+}
+.elementor .e-con.prl-hero__prev{
+  border:1px solid rgba(255,255,255,.4);background-color:rgba(255,255,255,.12);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23FFFFFF' stroke-width='2.2'%3E%3Cpath d='M19 12H5m6-6-6 6 6 6'/%3E%3C/svg%3E");
+}
+.elementor .e-con.prl-hero__prev:hover{background-color:rgba(255,255,255,.28)}
+.elementor .e-con.prl-hero__next{
+  border:0;background-color:#fff;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%232F5B43' stroke-width='2.2'%3E%3Cpath d='M5 12h14m-6-6 6 6-6 6'/%3E%3C/svg%3E");
+}
+.elementor .e-con.prl-hero__next:hover{background-color:var(--prl-tint-200)}
+
+/* The two-tone wave at the foot of the hero. Inline SVG in the design; as a
+   background it stays out of the markup the client edits. */
+.elementor .prl-hero::after{
+  content:"";position:absolute;left:0;right:0;bottom:-1px;height:80px;z-index:2;
+  pointer-events:none;background-repeat:no-repeat;background-size:100% 100%;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 90' preserveAspectRatio='none'%3E%3Cpath d='M0 40 C 360 95, 720 95, 1080 45 S 1440 0, 1440 0 V90 H0Z' fill='%239FC48A' opacity='.7'/%3E%3Cpath d='M0 58 C 380 100, 760 100, 1100 62 S 1440 30, 1440 30 V90 H0Z' fill='%23F6F4EE'/%3E%3C/svg%3E");
+}
+
+/* =========================================================
+   TYPE ON THE INNER ELEMENTS.
+   The design styles controls as `button` / `a` (e.g. `.prl-books__tabs button`),
+   but a Button widget renders `a.elementor-button` inside two wrappers, so those
+   selectors no longer match. The values below are the design's, read from
+   PRL Home v3, re-applied where the text actually lives.
+   ========================================================= */
+.elementor .prl-hero__cta .elementor-button{font-size:17px;font-weight:700;color:#1B2B17}
+.elementor .prl-welcome__link .elementor-button{font-size:15px;font-weight:700;color:var(--prl-accent,var(--prl-forest))}
+.elementor .prl-sf__open .elementor-button{font-size:15px;font-weight:700;color:var(--prl-mint)}
+.elementor .prl-awb__more .elementor-button{font-size:14px;font-weight:700;color:var(--prl-mint);text-decoration:underline;text-underline-offset:4px}
+.elementor .prl-news__item .elementor-button{font-size:13px;font-weight:700;color:#2F7A4F}
+.elementor .prl-chip .elementor-button{font-size:14px;font-weight:600;color:var(--prl-ink)}
+.elementor .prl-chip.is-active .elementor-button{color:#fff}
+.elementor .prl-events__tab .elementor-button{font-size:15px;font-weight:700;color:var(--prl-ink)}
+.elementor .prl-events__tab.is-active .elementor-button{color:#fff}
+.elementor .prl-books__tab .elementor-button{font-size:14px;font-weight:700;color:var(--prl-ink)}
+.elementor .prl-books__tab.is-active .elementor-button{color:#fff}
+.elementor .prl-donate__amt .elementor-button{font-size:17px;font-weight:700;color:#fff}
+.elementor .prl-donate__amt.is-active .elementor-button{color:var(--prl-forest-deep)}
+.elementor .prl-donate__cta .elementor-button{font-size:16px;font-weight:700;color:var(--prl-forest-deep)}
+.elementor .prl-donate__alt .elementor-button{font-size:15px;font-weight:600;color:#fff;text-decoration:underline;text-underline-offset:4px}
+.elementor .prl-btn--primary .elementor-button,
+.elementor .prl-btn--ghost .elementor-button{font-size:15px;font-weight:700}
+.elementor .prl-select__browse .elementor-button{font-size:15px;font-weight:700;color:var(--prl-accent,var(--prl-forest))}
+.elementor .prl-select__browse.is-open .elementor-button{color:#fff}
+
+/* Icon-list text (marquee, AWB links, the A-Z grid, closed days). */
+.elementor .prl-marquee__item .elementor-icon-list-text,
+.elementor .prl-marquee__track .elementor-icon-list-text{
+  font-family:var(--prl-font-head);font-size:17px;color:var(--prl-forest-deep);
+}
+.elementor .prl-awb__links .elementor-icon-list-text{font-size:14px;color:#E6EFE8}
+.elementor .prl-select__grid .elementor-icon-list-text{font-size:14px;color:var(--prl-ink)}
+.elementor .prl-hours__closedlist .elementor-icon-list-text{font-size:15px;font-weight:700;color:#fff}
+.elementor .prl-hours__closedlist .elementor-icon-list-icon svg{width:7px;height:7px;fill:var(--prl-mint)}
+.elementor .prl-marquee__track .elementor-icon-list-icon svg{width:11px;height:11px;stroke:#8FC46A;fill:none}
+
+/* =========================================================
+   Remaining per-component type, read from PRL Home v3.
+   These sit on wrappers whose own rules Elementor's heading reset
+   or a later theme rule was overriding.
+   ========================================================= */
+.elementor .prl-select__title .elementor-heading-title{font-size:30px;color:var(--prl-forest)}
+.elementor .prl-select__sub{font-size:15px;color:#4A4844}
+.elementor .prl-welcome__text{color:#4A4844}
+.elementor .prl-events__sub{color:#4A4844}
+.elementor .prl-stream__sub{font-size:17px;color:#DCE8DE}
+.elementor .prl-donate__text{color:#DCE8DE}
+.elementor .prl-books__heading h2.elementor-heading-title{font-size:28px;color:var(--prl-ink)}
+/* Event row date: the design's month label is 12px / .1em / #2F7A4F. */
+.elementor .prl-events__rdate .m .elementor-heading-title{
+  font-size:12px;line-height:normal;letter-spacing:.1em;color:#2F7A4F;font-weight:700;
+}
+.elementor .prl-events__rdate .d .elementor-heading-title{font-size:20px;line-height:1.1;font-weight:700}
+.elementor .prl-events__date .m .elementor-heading-title{font-size:12px;letter-spacing:.1em;font-weight:700}
+.elementor .prl-events__date .d .elementor-heading-title{font-size:20px;line-height:1.1;font-weight:700}
+
+/* =========================================================
+   CONTAINER GAP.
+   Elementor gives every container `gap: var(--gap)` with a 20px default, which
+   silently pads any stack the design CSS does not set a gap on - it was adding
+   20px inside each Key Dates chip and between the Select title and its subline.
+   Zero the default so only the design's explicit gaps apply; containers whose
+   gap is set in the editor keep theirs (per-element CSS is more specific).
+   ========================================================= */
+.elementor .e-con[class*="prl-"]{--gap:0px;--row-gap:0px;--column-gap:0px}
+
+/* The design's Key Dates rows butt against each other - the top border is the
+   separator, so the card itself carries no gap. */
+.elementor .e-con.prl-keydates{gap:0}
+
+/* =========================================================
+   SECTION 2 - LIBRARY SELECTOR
+   The filter is a Search widget, so WordPress renders a label, an input and a
+   submit button. The design has a single wide field and no button.
+   ========================================================= */
+.elementor .e-con.prl-select__head{align-items:center}
+.elementor .e-con.prl-select__intro{gap:0}
+.elementor .prl-select__search{flex:1;min-width:0}
+.elementor .prl-select__search form,
+.elementor .prl-select__search .wp-block-search__inside-wrapper{display:flex;gap:0;width:100%}
+.elementor .prl-select__search label{flex:1;min-width:0;display:block;margin:0}
+.elementor .prl-select__search input[type="search"],
+.elementor .prl-select__search .search-field{
+  width:100%;border:1.5px solid #C6D7CA;border-radius:12px;padding:15px 16px;
+  font-size:17px;background:#FAFBF9;color:var(--prl-forest-deep);height:auto;outline:none;
+}
+.elementor .prl-select__search input[type="search"]:focus,
+.elementor .prl-select__search .search-field:focus{border-color:var(--prl-accent,var(--prl-forest))}
+/* The design has no submit button - Enter and the live filter do the work. */
+.elementor .prl-select__search input[type="submit"],
+.elementor .prl-select__search .search-submit,
+.elementor .prl-select__search button[type="submit"]{display:none}
+.elementor .prl-select__search .screen-reader-text{
+  position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;
+}
+.elementor .prl-select__browse{flex:none}
+
+/* =========================================================
+   SECTION 4 - SPECIAL FEATURES
+   ========================================================= */
+/* Elementor pins widgets to max-width:100% at 0,4,0 and drops the design's
+   measure; re-assert above it (same trap as the hero title). */
+.elementor.elementor .e-con > .elementor-widget.prl-sf__title{max-width:1100px;margin-inline:auto}
+
+/* The design's three tabs use flex:1, so the column always matches the panel
+   beside it - that is why they read taller than their content. */
+.elementor .e-con.prl-sf__list{flex-direction:column;gap:14px}
+.elementor .e-con.prl-sf__item{
+  flex:1;display:grid;grid-template-columns:44px minmax(0,1fr);gap:14px;
+  align-items:center;text-align:left;padding:18px 20px;border-radius:22px;
+  position:relative;overflow:hidden;cursor:pointer;
+}
+.elementor .e-con.prl-sf__meta{flex-direction:column;gap:2px}
+
+/* Progress track, with the fill as a pseudo-element so the markup stays clean. */
+.elementor .e-con.prl-sf__bar{
+  position:absolute;left:0;right:0;bottom:0;height:3px;width:100%;
+  background:rgba(159,196,138,.15);min-height:3px;
+}
+.elementor .prl-sf__item.is-active .prl-sf__bar::after{
+  content:"";position:absolute;inset:0 auto 0 0;height:3px;border-radius:2px;
+  background:#7FB561;animation:prlProgress 6s linear both;transform-origin:left;
+}
+.elementor .e-con.prl-sf__shot{min-height:240px}
+.elementor .e-con.prl-sf__panel{flex-direction:column;gap:0}
+.elementor .e-con.prl-sf__foot{flex-direction:row;justify-content:space-between;align-items:center;gap:18px;padding:16px 6px 4px}
+
+/* The design ends the link with a circled arrow. Font Awesome 6 names do not
+   resolve on this install (FA5), so it is drawn in CSS instead. */
+.elementor .prl-sf__open .elementor-button-icon{display:none}
+.elementor .prl-sf__open .elementor-button::after{
+  content:"";flex:none;width:38px;height:38px;border-radius:50%;
+  border:1.5px solid var(--prl-mint);background-repeat:no-repeat;background-position:center;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 24 24' fill='none' stroke='%239FC48A' stroke-width='2.2'%3E%3Cpath d='M7 17 17 7M9 7h8v8'/%3E%3C/svg%3E");
+}
+.elementor .prl-sf__open:hover .elementor-button::after{background-color:rgba(159,196,138,.18)}
+
+/* The three book marks in the heading, drawn as the design draws them. */
+.prl-book-mark{
+  display:inline-block;width:.62em;height:.84em;margin:0 .14em;
+  border-radius:2px 4px 4px 2px;box-shadow:inset 3px 0 0 rgba(0,0,0,.18);
+  vertical-align:baseline;
+}
+.prl-book-mark--1{background:#D9B65A;transform:rotate(-8deg) translateY(.06em)}
+.prl-book-mark--2{background:#6A4C7D;transform:rotate(6deg) translateY(.06em)}
+.prl-book-mark--3{background:#A4513A;transform:rotate(-4deg) translateY(.06em)}
+
+/* Measured from the design: the grid stretches both columns to the same
+   height, which is what lets the three tabs share it via flex:1. The theme
+   CSS had .62fr/1fr with align-items:start, so the column collapsed to its
+   content and the tabs never grew. */
+.elementor .e-con.prl-sf__grid{
+  grid-template-columns:minmax(0,.85fr) minmax(0,1.6fr);
+  gap:28px;align-items:stretch;
+}
+.elementor .e-con.prl-sf__list{gap:10px}
+.elementor .e-con.prl-sf__panels{padding:16px 16px 18px}
+
+/* Design shell is `max-width:1180px; padding:84px 28px 80px`; the theme had a
+   flat 72px block. Note the design's 746px section also contains the marquee
+   strip at its foot, which is a separate section here. */
+.elementor .e-con.prl-sf{padding-block:0}
+.elementor .e-con.prl-sf > .prl-shell{padding-block:84px 80px}
+
+/* The two swoop curves behind Special Features. In the design these are an
+   inline <svg viewBox="0 0 1440 700" opacity=".35"> with two 1.2px #9FC48A
+   strokes; as a background they stay out of the markup the client edits.
+   preserveAspectRatio="none" is why the viewBox stretches with the section. */
+.elementor .e-con.prl-sf::before{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:0;opacity:.35;
+  background-repeat:no-repeat;background-size:100% 100%;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 700' preserveAspectRatio='none'%3E%3Cpath d='M-40 600 C 160 440, 260 690, 420 540 S 620 340, 560 250' fill='none' stroke='%239FC48A' stroke-width='1.2'/%3E%3Cpath d='M1180 -20 C 1260 90, 1420 70, 1380 200 S 1460 330, 1500 290' fill='none' stroke='%239FC48A' stroke-width='1.2'/%3E%3C/svg%3E");
+}
+.elementor .e-con.prl-sf > *{position:relative;z-index:1}
+
+/* =========================================================
+   SECTION 6 - AROUND PARKLAND
+   The design lays a faint outlined-books pattern over a diagonal wash:
+     linear-gradient(100deg,#F1F6EE 0%,#E6F0DF 45%,#D6E8C8 100%)
+   plus 19 book outlines, #2F5B43 at 1.6px and opacity .14, in a
+   1440x960 viewBox with preserveAspectRatio=xMidYMid slice.
+   Both are backgrounds, so the markup the client edits stays clean.
+   ========================================================= */
+.elementor .e-con.prl-around{
+  position:relative;
+  background-color:#F6F4EE;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns%3D%22http://www.w3.org/2000/svg%22 width%3D%221440%22 height%3D%22960%22 viewBox%3D%220 0 1440 960%22%3E%3Cg fill%3D%22none%22 stroke%3D%22%232F5B43%22 stroke-width%3D%221.6%22 stroke-linejoin%3D%22round%22 stroke-linecap%3D%22round%22 opacity%3D%22.14%22%3E%3Cpath transform%3D%22translate%2860 80%29 rotate%28-18%29 scale%281.3%29%22 d%3D%22M0 6 C 10 0%2C 22 0%2C 32 6 L32 46 C 22 40%2C 10 40%2C 0 46 Z M32 6 C 42 0%2C 54 0%2C 64 6 L64 46 C 54 40%2C 42 40%2C 32 46 M6 12 L26 12 M6 20 L26 20 M38 12 L58 12 M38 20 L58 20%22/%3E%3Cpath transform%3D%22translate%28260 40%29 rotate%2814%29 scale%281%29%22 d%3D%22M0 0 H34 a4 4 0 0 1 4 4 V52 H4 a4 4 0 0 1 -4 -4 Z M8 0 V52 M4 52 a4 4 0 0 1 0 -8 H38%22/%3E%3Cpath transform%3D%22translate%28470 140%29 rotate%28-8%29 scale%281.1%29%22 d%3D%22M0 6 C 10 0%2C 22 0%2C 32 6 L32 46 C 22 40%2C 10 40%2C 0 46 Z M32 6 C 42 0%2C 54 0%2C 64 6 L64 46 C 54 40%2C 42 40%2C 32 46 M6 12 L26 12 M6 20 L26 20 M38 12 L58 12 M38 20 L58 20%22/%3E%3Cpath transform%3D%22translate%28720 60%29 rotate%2822%29 scale%281.2%29%22 d%3D%22M0 0 H34 a4 4 0 0 1 4 4 V52 H4 a4 4 0 0 1 -4 -4 Z M8 0 V52 M4 52 a4 4 0 0 1 0 -8 H38%22/%3E%3Cpath transform%3D%22translate%28930 110%29 rotate%28-24%29 scale%281.3%29%22 d%3D%22M0 6 C 10 0%2C 22 0%2C 32 6 L32 46 C 22 40%2C 10 40%2C 0 46 Z M32 6 C 42 0%2C 54 0%2C 64 6 L64 46 C 54 40%2C 42 40%2C 32 46 M6 12 L26 12 M6 20 L26 20 M38 12 L58 12 M38 20 L58 20%22/%3E%3Cpath transform%3D%22translate%281180 50%29 rotate%2810%29 scale%281%29%22 d%3D%22M0 0 H34 a4 4 0 0 1 4 4 V52 H4 a4 4 0 0 1 -4 -4 Z M8 0 V52 M4 52 a4 4 0 0 1 0 -8 H38%22/%3E%3Cpath transform%3D%22translate%281340 170%29 rotate%28-14%29 scale%281.2%29%22 d%3D%22M0 6 C 10 0%2C 22 0%2C 32 6 L32 46 C 22 40%2C 10 40%2C 0 46 Z M32 6 C 42 0%2C 54 0%2C 64 6 L64 46 C 54 40%2C 42 40%2C 32 46 M6 12 L26 12 M6 20 L26 20 M38 12 L58 12 M38 20 L58 20%22/%3E%3Cpath transform%3D%22translate%28120 420%29 rotate%2820%29 scale%281.2%29%22 d%3D%22M0 0 H34 a4 4 0 0 1 4 4 V52 H4 a4 4 0 0 1 -4 -4 Z M8 0 V52 M4 52 a4 4 0 0 1 0 -8 H38%22/%3E%3Cpath transform%3D%22translate%28380 520%29 rotate%28-12%29 scale%281.3%29%22 d%3D%22M0 6 C 10 0%2C 22 0%2C 32 6 L32 46 C 22 40%2C 10 40%2C 0 46 Z M32 6 C 42 0%2C 54 0%2C 64 6 L64 46 C 54 40%2C 42 40%2C 32 46 M6 12 L26 12 M6 20 L26 20 M38 12 L58 12 M38 20 L58 20%22/%3E%3Cpath transform%3D%22translate%28640 440%29 rotate%288%29 scale%281%29%22 d%3D%22M0 0 H34 a4 4 0 0 1 4 4 V52 H4 a4 4 0 0 1 -4 -4 Z M8 0 V52 M4 52 a4 4 0 0 1 0 -8 H38%22/%3E%3Cpath transform%3D%22translate%28860 560%29 rotate%28-20%29 scale%281.2%29%22 d%3D%22M0 6 C 10 0%2C 22 0%2C 32 6 L32 46 C 22 40%2C 10 40%2C 0 46 Z M32 6 C 42 0%2C 54 0%2C 64 6 L64 46 C 54 40%2C 42 40%2C 32 46 M6 12 L26 12 M6 20 L26 20 M38 12 L58 12 M38 20 L58 20%22/%3E%3Cpath transform%3D%22translate%281090 430%29 rotate%2816%29 scale%281.3%29%22 d%3D%22M0 0 H34 a4 4 0 0 1 4 4 V52 H4 a4 4 0 0 1 -4 -4 Z M8 0 V52 M4 52 a4 4 0 0 1 0 -8 H38%22/%3E%3Cpath transform%3D%22translate%281300 560%29 rotate%28-6%29 scale%281.1%29%22 d%3D%22M0 6 C 10 0%2C 22 0%2C 32 6 L32 46 C 22 40%2C 10 40%2C 0 46 Z M32 6 C 42 0%2C 54 0%2C 64 6 L64 46 C 54 40%2C 42 40%2C 32 46 M6 12 L26 12 M6 20 L26 20 M38 12 L58 12 M38 20 L58 20%22/%3E%3Cpath transform%3D%22translate%28200 700%29 rotate%28-20%29 scale%281%29%22 d%3D%22M0 6 C 10 0%2C 22 0%2C 32 6 L32 46 C 22 40%2C 10 40%2C 0 46 Z M32 6 C 42 0%2C 54 0%2C 64 6 L64 46 C 54 40%2C 42 40%2C 32 46 M6 12 L26 12 M6 20 L26 20 M38 12 L58 12 M38 20 L58 20%22/%3E%3Cpath transform%3D%22translate%28560 760%29 rotate%2812%29 scale%281.2%29%22 d%3D%22M0 0 H34 a4 4 0 0 1 4 4 V52 H4 a4 4 0 0 1 -4 -4 Z M8 0 V52 M4 52 a4 4 0 0 1 0 -8 H38%22/%3E%3Cpath transform%3D%22translate%281000 740%29 rotate%28-10%29 scale%281.1%29%22 d%3D%22M0 6 C 10 0%2C 22 0%2C 32 6 L32 46 C 22 40%2C 10 40%2C 0 46 Z M32 6 C 42 0%2C 54 0%2C 64 6 L64 46 C 54 40%2C 42 40%2C 32 46 M6 12 L26 12 M6 20 L26 20 M38 12 L58 12 M38 20 L58 20%22/%3E%3Cpath transform%3D%22translate%281360 820%29 rotate%2818%29 scale%281%29%22 d%3D%22M0 0 H34 a4 4 0 0 1 4 4 V52 H4 a4 4 0 0 1 -4 -4 Z M8 0 V52 M4 52 a4 4 0 0 1 0 -8 H38%22/%3E%3Cpath transform%3D%22translate%2840 900%29 rotate%288%29 scale%281.2%29%22 d%3D%22M0 0 H34 a4 4 0 0 1 4 4 V52 H4 a4 4 0 0 1 -4 -4 Z M8 0 V52 M4 52 a4 4 0 0 1 0 -8 H38%22/%3E%3Cpath transform%3D%22translate%28760 900%29 rotate%28-16%29 scale%281.3%29%22 d%3D%22M0 6 C 10 0%2C 22 0%2C 32 6 L32 46 C 22 40%2C 10 40%2C 0 46 Z M32 6 C 42 0%2C 54 0%2C 64 6 L64 46 C 54 40%2C 42 40%2C 32 46 M6 12 L26 12 M6 20 L26 20 M38 12 L58 12 M38 20 L58 20%22/%3E%3C/g%3E%3C/svg%3E"),linear-gradient(100deg,#F1F6EE 0%,#E6F0DF 45%,#D6E8C8 100%);
+  background-repeat:no-repeat,no-repeat;
+  background-size:cover,100% 100%;
+  background-position:center,center;
+}
+.elementor .e-con.prl-around > *{position:relative;z-index:1}
+
+/* The design alternates the cards: photo left on the first, right on the
+   second. Both grids stay 1fr 1fr; only the order flips. */
+.elementor .elementor-element-ar-card-2 .prl-around__shot{order:2}
+
+/* =========================================================
+   SECTION 7 - EVENTS
+   Measured from the design: head is a space-between row with the toggle on the
+   right; the toggle is a 246x51 pill, background #F1EEE6, padding 5px; the grid
+   is 1.05fr/1fr (the feature is WIDER than the list, the theme had it narrower);
+   rows are 64px/1fr/40px with a 40px dark go-circle.
+   ========================================================= */
+.elementor .e-con.prl-events__head{
+  flex-direction:row;justify-content:space-between;align-items:center;gap:20px;
+}
+.elementor .e-con.prl-events__head > .e-con{width:auto}
+
+/* The toggle pill. Both states are declared: an active rule that set only the
+   text colour left "View All" as white on white, so it read as missing. */
+.elementor .e-con.prl-events__toggle{
+  flex-direction:row;align-items:center;width:auto;flex:none;
+  background:#F1EEE6;border-radius:999px;padding:5px;gap:0;
+}
+.elementor .prl-events__tab .elementor-button{
+  background:transparent;color:var(--prl-ink);
+  padding:10px 20px;border-radius:999px;justify-content:center;
+}
+.elementor .prl-events__tab.is-active .elementor-button{
+  background:var(--prl-forest-deep);color:#fff;
+}
+
+.elementor .e-con.prl-events__grid{
+  grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:28px;align-items:stretch;
+}
+.elementor .e-con.prl-events__row{
+  grid-template-columns:64px minmax(0,1fr) 40px;gap:14px;align-items:center;
+}
+/* The go-circle is an empty container in the markup; the design's white arrow
+   is drawn here rather than relying on an icon font. */
+.elementor .e-con.prl-events__go{
+  width:40px;height:40px;border-radius:50%;flex:none;align-self:center;
+  background-color:var(--prl-forest-deep);
+  background-repeat:no-repeat;background-position:center;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns%3D%22http://www.w3.org/2000/svg%22 width%3D%2216%22 height%3D%2216%22 viewBox%3D%220 0 24 24%22 fill%3D%22none%22 stroke%3D%22%23ffffff%22 stroke-width%3D%222.2%22%3E%3Cpath d%3D%22M5 12h14m-6-6 6 6-6 6%22/%3E%3C/svg%3E");
+}
+/* Design: list gap 12px, and the rows share the column height via flex:1. */
+.elementor .e-con.prl-events__list{flex-direction:column;gap:12px}
+.elementor .e-con.prl-events__row{flex:1}
+
+/* =========================================================
+   SECTIONS 8-11, all measured from PRL Home v3
+   ========================================================= */
+
+/* --- 9. NEW & NOTABLE -------------------------------------------------
+   The design's card IS the cover: 276x368 with the meta panel absolutely
+   positioned over its lower third (rgba(24,30,26,.82), padding 16/16/18).
+   The theme stacked cover above meta, which made every card ~140px taller. */
+.elementor .e-con.prl-book{
+  position:relative;aspect-ratio:276/368;background:#E9E4D8;
+  border-radius:14px;overflow:hidden;
+}
+.elementor .e-con.prl-book__cover{position:absolute;inset:0;min-height:0}
+.elementor .e-con.prl-book__meta{
+  position:absolute;left:0;right:0;bottom:0;
+  padding:16px 16px 18px;background:rgba(24,30,26,.82);gap:2px;
+}
+.elementor .e-con.prl-books__shelf{gap:22px}
+
+/* --- 8. STREAM & DOWNLOAD ---------------------------------------------
+   Icon discs are 84x84, rgba(255,255,255,.14) with a .35 hairline. */
+.elementor .e-con.prl-stream__grid{gap:10px}
+.elementor .e-con.prl-stream__item{padding:18px 8px;gap:10px}
+.elementor .prl-stream__icon .elementor-icon{
+  width:84px;height:84px;border-radius:50%;
+  background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);
+  display:flex;align-items:center;justify-content:center;font-size:30px;color:#fff;
+}
+.elementor .prl-stream__icon .elementor-icon svg{width:30px;height:30px;fill:none;stroke:#fff}
+
+/* --- 11. DONATE -------------------------------------------------------
+   Card columns are 646.297 / 477.703 of 1124 - a 1.353:1 split. */
+.elementor .e-con.prl-donate__card{
+  grid-template-columns:minmax(0,1.353fr) minmax(0,1fr);
+}
+
+/* --- 6b. OFFICE HOURS -------------------------------------------------
+   Rows are 24px at padding 3px 10px, radius 7px. Today is picked out with
+   rgba(159,196,138,.22) and white 700 - the class is added by prl-home.js,
+   because the native rebuild has no server-side template to set it. */
+.elementor .e-con.prl-hours__row{
+  padding:3px 10px;border-radius:7px;min-height:0;
+}
+.elementor .e-con.prl-hours__row .elementor-heading-title{color:#DCE8DE;font-weight:400}
+.elementor .e-con.prl-hours__row.is-today{background:rgba(159,196,138,.22)}
+.elementor .e-con.prl-hours__row.is-today .elementor-heading-title{color:#fff;font-weight:700}
+/* =========================================================
+   SECTION PADDING, measured per section from PRL Home v3.
+   Every section there carries padding on its 1180 shell, not on the section,
+   and the values differ section to section. The theme used a flat 72px or 64px
+   block, which is why so many sections measured short once the stray 20px
+   container gaps were removed.
+   ========================================================= */
+.elementor .e-con.prl-sf,
+.elementor .e-con.prl-around,
+.elementor .e-con.prl-events,
+.elementor .e-con.prl-stream,
+.elementor .e-con.prl-books,
+.elementor .e-con.prl-donate{padding-block:0}
+
+.elementor .e-con.prl-sf      > .prl-shell{padding:84px 28px 80px}
+.elementor .e-con.prl-around  > .prl-shell{padding:88px 28px 96px}
+.elementor .e-con.prl-events   > .prl-shell{padding:88px 28px 92px}
+.elementor .e-con.prl-stream   > .prl-shell{padding:56px 28px 60px}
+.elementor .e-con.prl-books    > .prl-shell{padding:64px 28px 72px}
+.elementor .e-con.prl-donate   > .prl-shell{padding:80px 28px}
+/* --- STREAM GRID IS FIXED-WIDTH -------------------------------------
+   The design is five 144px columns at gap 10 - a 760px band centred in the
+   1124 shell, not 1fr columns stretched across it. Items are 144x210 with a
+   12px internal gap, and the 84px icon wrapper must not shrink: it was
+   clipping the disc to 74px. */
+.elementor .e-con.prl-stream__grid{
+  grid-template-columns:repeat(5,144px);gap:10px;justify-content:center;
+}
+.elementor .e-con.prl-stream__item{min-height:210px;gap:12px;padding:18px 8px}
+.elementor .prl-stream__icon{width:84px;height:84px;flex:none}
+.elementor .prl-stream__icon .elementor-widget-container{width:84px;height:84px}
+
+/* Design event rows are 102px at padding 14px 16px; ours sat at 109. */
+.elementor .e-con.prl-events__row{padding:14px 16px}
