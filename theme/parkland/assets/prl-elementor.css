@@ -898,7 +898,7 @@
 
 /* --- Office Hours status badge (text and state set by prl-home.js from the
    hours and closed days above, in Alberta time). */
-.elementor .e-con.prl-hours > .prl-hours__status{align-self:flex-start;width:auto;max-width:100%}
+.elementor .e-con.prl-hours > .prl-hours__status{align-self:flex-start;width:auto;max-width:100%;background:none;border:0;padding:0;margin:0 0 6px;border-radius:0}
 .elementor .prl-hours__status .elementor-heading-title{
   display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;
   font-size:13px;font-weight:700;line-height:1.3;background:rgba(255,255,255,.12);color:#fff;
