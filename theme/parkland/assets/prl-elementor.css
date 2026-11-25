@@ -980,6 +980,7 @@
 #prl-perks .elementor-widget-icon-box:hover,
 #prl-perks .elementor-widget-icon-box:focus-within{background-color:rgba(255,255,255,.22)}
 #prl-perks .elementor-icon-box-wrapper{justify-content:center}
+#prl-perks .elementor-icon-box-content{flex-grow:0}
 #prl-perks .elementor-icon-box-title a::after{content:"";position:absolute;inset:0;border-radius:12px}
 #prl-perks .elementor-icon-box-title a,#prl-perks .elementor-icon-box-title a:hover{color:#1B2B17;text-decoration:none}
 @media (max-width:767px){#prl-perks .elementor-icon-box-wrapper{justify-content:flex-start}}
