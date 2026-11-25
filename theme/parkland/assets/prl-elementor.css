@@ -972,3 +972,14 @@
   .elementor .e-con.prl-quotes__face{width:44px;height:44px}
   .elementor .e-con.prl-quotes__face.is-active{width:58px;height:58px}
 }
+
+/* --- Green link strip above the footer (#prl-perks, icon boxes): as in PRL
+   Home v3 each tile is an 8px-padded, 12px-rounded hit area that lightens to
+   22% white on hover, content centred; the whole tile follows the link. */
+#prl-perks .elementor-widget-icon-box{position:relative;padding:8px;border-radius:12px;transition:background-color .2s}
+#prl-perks .elementor-widget-icon-box:hover,
+#prl-perks .elementor-widget-icon-box:focus-within{background-color:rgba(255,255,255,.22)}
+#prl-perks .elementor-icon-box-wrapper{justify-content:center}
+#prl-perks .elementor-icon-box-title a::after{content:"";position:absolute;inset:0;border-radius:12px}
+#prl-perks .elementor-icon-box-title a,#prl-perks .elementor-icon-box-title a:hover{color:#1B2B17;text-decoration:none}
+@media (max-width:767px){#prl-perks .elementor-icon-box-wrapper{justify-content:flex-start}}
