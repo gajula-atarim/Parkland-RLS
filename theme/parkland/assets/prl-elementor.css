@@ -1109,7 +1109,8 @@
 @media (max-width:1024px){.elementor .e-con.prl-donate__card > .e-con.prl-donate__body{padding:44px 40px}}
 @media (max-width:767px){
   .elementor .e-con.prl-donate__card > .e-con.prl-donate__body{padding:32px 22px}
-  .elementor .e-con.prl-donate__actions{align-items:flex-start}
+  .elementor .e-con.prl-donate__actions{align-items:stretch;width:100%}
+  .elementor .elementor-widget-button.prl-donate__alt{align-self:flex-start}
   .elementor .prl-donate__cta .elementor-button{width:100%;justify-content:center}
   .elementor .elementor-widget-button.prl-donate__cta{width:100%}
 }
