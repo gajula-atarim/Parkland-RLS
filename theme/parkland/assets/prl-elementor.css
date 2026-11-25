@@ -687,3 +687,40 @@
   margin:8px 0 0;padding:28px;border:1px dashed var(--prl-rule,#DDD8C8);border-radius:16px;
   background:#fff;text-align:center;font-size:16px;color:#4A4844;
 }
+
+/* Header search pill. Hello Elementor's reset gives every button padding
+   .5rem 1rem and a #c36 (pink) background on :hover/:focus at 0,2,0. That
+   padding squeezed the 20px magnifier into ~12px and turned the Catalogue
+   switch pink on hover. Re-assert the pill's controls at 0,3,0. */
+.prl-search .prl-search__mode,
+.prl-search .prl-search__submit,
+.prl-search .prl-search__opt{font:inherit;text-transform:none;letter-spacing:normal;white-space:normal;text-decoration:none}
+
+.prl-search .prl-search__submit{
+  width:46px;height:46px;padding:0;border:0;border-radius:50%;
+  background:var(--prl-meadow,#7FB561);color:#1B2B17;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s,box-shadow .2s,transform .2s;
+}
+.prl-search .prl-search__submit svg{width:22px;height:22px;flex:none;stroke:#1B2B17;transition:stroke .2s}
+.prl-search .prl-search__submit:hover,
+.prl-search .prl-search__submit:focus-visible{
+  background:var(--prl-forest,#2F5B43);box-shadow:0 6px 16px -6px rgba(20,38,25,.6);transform:translateY(-1px);
+}
+.prl-search .prl-search__submit:hover svg,
+.prl-search .prl-search__submit:focus-visible svg{stroke:#fff}
+.prl-search .prl-search__submit:focus:not(:focus-visible){background:var(--prl-meadow,#7FB561)}
+.prl-search .prl-search__submit:active{transform:translateY(0)}
+
+.prl-search .prl-search__mode{
+  padding:3px 14px 3px 3px;border:0;border-right:1px solid #E4E0D3;border-radius:999px 0 0 999px;
+  background:transparent;color:inherit;transition:background .2s;
+}
+.prl-search .prl-search__mode:hover,
+.prl-search .prl-search__mode:focus,
+.prl-search .prl-search__mode[aria-expanded="true"]{background:var(--prl-tint-100,#F1F6EE);color:inherit}
+
+.prl-search .prl-search__opt{padding:12px 14px;border:0;border-radius:14px;background:transparent;color:inherit}
+.prl-search .prl-search__opt:hover,
+.prl-search .prl-search__opt:focus,
+.prl-search .prl-search__opt[aria-selected="true"]{background:var(--prl-tint-100,#F1F6EE);color:inherit}
