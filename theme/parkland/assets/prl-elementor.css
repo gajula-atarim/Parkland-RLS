@@ -1043,7 +1043,7 @@
 /* Text links built with the Button widget keep their colour on hover/focus. */
 .elementor .prl-sf__open .elementor-button:hover,.elementor .prl-sf__open .elementor-button:focus{color:#9FC48A;background:none}
 .elementor .prl-awb__more .elementor-button:hover,.elementor .prl-awb__more .elementor-button:focus{color:#fff;background:none}
-.elementor .prl-news__item .elementor-button:hover,.elementor .prl-news__item .elementor-button:focus{color:#1F3A2C;background:none;text-decoration:underline}
+.elementor .prl-news__item .elementor-button:hover,.elementor .prl-news__item .elementor-button:focus{color:#2F7A4F;background:none;text-decoration:none}
 .elementor .prl-donate__alt .elementor-button:hover,.elementor .prl-donate__alt .elementor-button:focus{color:#fff;background:none}
 .elementor .prl-events__tab:not(.is-active) .elementor-button:hover,
 .elementor .prl-events__tab:not(.is-active) .elementor-button:focus{background:rgba(31,58,44,.08);color:var(--prl-ink,#2B2A28)}
@@ -1067,3 +1067,14 @@
 .elementor .prl-sf__title{margin:0}
 .elementor .prl-sf__title .elementor-heading-title{font-size:clamp(28px,3.2vw,44px);line-height:1.2;text-wrap:balance}
 .elementor .prl-sf__eyebrow{margin:0}
+
+/* --- Parkland News (PRL Home v3): each item is one link that slides 8px right
+   on hover. The item's own link stretches over the whole item. */
+.elementor .e-con.prl-news__item{position:relative;transition:padding-left .2s}
+.elementor .e-con.prl-news__item:hover,
+.elementor .e-con.prl-news__item:focus-within{padding-left:8px}
+.elementor .prl-news__item .elementor-button::after{content:"";position:absolute;inset:0}
+.elementor .prl-news__item .elementor-button:focus-visible{outline:none}
+.elementor .e-con.prl-news__item:focus-within{outline:2px solid #9FC48A;outline-offset:4px;border-radius:6px}
+.elementor .e-con.prl-news__item:has(:focus:not(:focus-visible)){outline:none}
+@media (prefers-reduced-motion:reduce){.elementor .e-con.prl-news__item{transition:none}}
