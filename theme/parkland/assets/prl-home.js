@@ -19,7 +19,19 @@
 	var all = function ( sel, root ) { return Array.prototype.slice.call( ( root || document ).querySelectorAll( sel ) ); };
 	var one = function ( sel, root ) { return ( root || document ).querySelector( sel ); };
 
-	/* A rotating group: panels switched by `is-hidden`, triggers by `is-active`. */
+	/* Run `fn` once `el` first scrolls into view, so a rotator starts on its
+	   first slide when the visitor reaches it (as the design does). */
+	function whenVisible( el, fn ) {
+		if ( ! el || ! ( 'IntersectionObserver' in window ) ) { fn(); return; }
+		var io = new IntersectionObserver( function ( es ) {
+			if ( es.some( function ( x ) { return x.isIntersecting; } ) ) { io.disconnect(); fn(); }
+		}, { threshold: 0.25 } );
+		io.observe( el );
+	}
+
+	/* A rotating group: panels switched by `is-hidden`, triggers by `is-active`.
+	   Auto-advance runs as in the design, also with reduced motion on (the
+	   change is an instant swap, not an animation); a click pins the panel. */
 	function group( panelSel, triggerSel, interval ) {
 		var panels   = all( panelSel );
 		var triggers = all( triggerSel );
@@ -35,7 +47,7 @@
 			} );
 		}
 		function start() {
-			if ( reduced || timer || ! interval ) { return; }
+			if ( timer || ! interval ) { return; }
 			timer = setInterval( function () { if ( ! paused ) { show( i + 1 ); } }, interval );
 		}
 
@@ -47,7 +59,8 @@
 			} );
 		} );
 		show( 0 );
-		start();
+		var host = panels[ 0 ].closest( '.e-con.e-parent' ) || panels[ 0 ].parentNode;
+		whenVisible( host, start );
 		return { show: function ( n ) { paused = true; show( n ); }, next: function () { paused = true; show( i + 1 ); },
 		         prev: function () { paused = true; show( i - 1 ); }, pause: function () { paused = true; } };
 	}
@@ -111,7 +124,8 @@
 		group( '.prl-sf__panel', '.prl-sf__item', 6000 );
 	}
 
-	/* ---- New & Notable: three shelves, no auto-advance in the design. */
+	/* ---- New & Notable: three shelves; the covers slide every 4.5s
+	   (initBookCarousel). Tabs switch shelves and stop the auto-advance. */
 	function initBooks() {
 		group( '.prl-books__shelf', '.prl-books__tab', 0 );
 		initBookCarousel();
@@ -172,11 +186,17 @@
 			start = n < 0 ? max : ( n > max ? 0 : n );
 			render();
 		}
-		prev.addEventListener( 'click', function () { go( start - 1 ); } );
-		next.addEventListener( 'click', function () { go( start + 1 ); } );
+		var paused = false;
+		prev.addEventListener( 'click', function () { paused = true; go( start - 1 ); } );
+		next.addEventListener( 'click', function () { paused = true; go( start + 1 ); } );
 		dots.addEventListener( 'click', function ( e ) {
 			var d = e.target.closest( '.prl-books__dot' );
-			if ( d ) { go( parseInt( d.getAttribute( 'data-i' ), 10 ) || 0 ); }
+			if ( d ) { paused = true; go( parseInt( d.getAttribute( 'data-i' ), 10 ) || 0 ); }
+		} );
+		all( '.prl-books__tab' ).forEach( function ( t ) { t.addEventListener( 'click', function () { paused = true; } ); } );
+		/* Auto-advance every 4.5s, as in the design, once the shelf is on screen. */
+		whenVisible( vp, function () {
+			setInterval( function () { if ( ! paused && ! document.hidden ) { go( start + 1 ); } }, 4500 );
 		} );
 		/* Switching tab shows another shelf: start it from its first title. */
 		if ( window.MutationObserver ) {
