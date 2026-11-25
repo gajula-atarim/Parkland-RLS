@@ -1113,4 +1113,7 @@
   .elementor .elementor-widget-button.prl-donate__alt{align-self:flex-start}
   .elementor .prl-donate__cta .elementor-button{width:100%;justify-content:center}
   .elementor .elementor-widget-button.prl-donate__cta{width:100%}
+  .elementor .e-con.prl-donate__amounts{flex-wrap:nowrap;gap:8px;width:100%}
+  .elementor .elementor-widget-button.prl-donate__amt{flex:1 1 0;min-width:0;width:auto;margin:0}
+  .elementor .prl-donate__amt .elementor-button{width:100%;min-width:0;padding:0 6px;font-size:16px}
 }
