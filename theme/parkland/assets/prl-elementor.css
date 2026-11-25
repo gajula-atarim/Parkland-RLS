@@ -585,3 +585,93 @@
 
 /* Design event rows are 102px at padding 14px 16px; ours sat at 109. */
 .elementor .e-con.prl-events__row{padding:14px 16px}
+
+/* =========================================================
+   RESPONSIVE + WIDGET FIXES (2026-11-25).
+   Moved here from Customizer > Additional CSS on new.prl.ab.ca.
+   The grids above are declared at 0,3,0 with no breakpoints, so they
+   overrode the tablet/mobile rules in prl-home2.css and every section
+   kept its desktop columns down to 390px. Same selectors, later in the
+   file, so these win only inside the media queries.
+   ========================================================= */
+@media (max-width:1024px){
+  .elementor .e-con.prl-sf__grid,
+  .elementor .e-con.prl-around__grid,
+  .elementor .e-con.prl-events__grid,
+  .elementor .e-con.prl-donate__card{grid-template-columns:minmax(0,1fr)}
+  .elementor .e-con.prl-welcome__grid{gap:32px}
+  .elementor .e-con.prl-awb{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .elementor .e-con.prl-awb > .prl-awb__links{grid-column:1/-1}
+  .elementor .e-con.prl-stream__grid{grid-template-columns:repeat(3,144px)}
+  .elementor .e-con.prl-books__shelf{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .elementor .e-con.prl-donate__photo{min-height:300px}
+  .elementor .e-con.prl-select__head{flex-direction:column;align-items:stretch;gap:18px}
+}
+@media (max-width:767px){
+  .elementor .e-con.prl-shell{padding-inline:16px}
+  .elementor .e-con.prl-sf     > .prl-shell,
+  .elementor .e-con.prl-around > .prl-shell,
+  .elementor .e-con.prl-events > .prl-shell,
+  .elementor .e-con.prl-books  > .prl-shell,
+  .elementor .e-con.prl-donate > .prl-shell{padding:44px 16px}
+  .elementor .e-con.prl-stream > .prl-shell{padding:40px 16px}
+
+  /* Hero: the arrows overlapped the kicker; the dots still switch slides. */
+  .elementor .e-con.prl-hero__nav{display:none}
+  .elementor .e-con.prl-hero__actions{flex-wrap:wrap}
+
+  /* Library selector: search field and Browse button stack. */
+  .elementor .e-con.prl-select__controls{flex-direction:column;align-items:stretch}
+
+  .elementor .e-con.prl-welcome__grid{grid-template-columns:minmax(0,1fr);gap:28px;padding-bottom:48px}
+
+  .elementor .e-con.prl-around__card{flex-direction:column}
+  .elementor .e-con.prl-awb{grid-template-columns:minmax(0,1fr)}
+  .elementor .e-con.prl-awb__shot{min-height:160px}
+
+  .elementor .e-con.prl-events__head{flex-direction:column;align-items:stretch;gap:16px}
+  .elementor .e-con.prl-events__head > .e-con{width:100%}
+  .elementor .e-con.prl-events__toggle{width:100%}
+  .elementor .prl-events__tab{flex:1}
+  .elementor .e-con.prl-events__feature{min-height:300px}
+  .elementor .e-con.prl-events__row{grid-template-columns:48px minmax(0,1fr) 32px;gap:12px;padding:12px}
+  .elementor .e-con.prl-events__go{width:32px;height:32px}
+  .elementor .e-con.prl-events__foot{flex-direction:column;align-items:flex-start;gap:14px}
+
+  .elementor .e-con.prl-sf__foot{flex-wrap:wrap}
+
+  .elementor .e-con.prl-stream__grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+
+  .elementor .e-con.prl-books__head{flex-direction:column;align-items:flex-start;gap:14px}
+  .elementor .e-con.prl-books__tabs{flex-wrap:wrap;width:100%}
+  .elementor .e-con.prl-books__shelf{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+
+  .elementor .e-con.prl-donate__amounts{flex-direction:row;flex-wrap:wrap}
+  .elementor .e-con.prl-donate__actions{flex-direction:column;align-items:stretch}
+}
+
+/* New & Notable tabs: the design's pill styles targeted a plain <button>; the
+   Button widget renders a.elementor-button, so the active tab was white text
+   on no background. Re-apply the design pills on the inner anchor. */
+.elementor .prl-books__tab .elementor-button{
+  background:#fff;border:1px solid var(--prl-rule,#DDD8C8);border-radius:999px;
+  padding:10px 18px;color:var(--prl-ink,#2B2A28);line-height:1.2;
+}
+.elementor .prl-books__tab .elementor-button:hover{border-color:var(--prl-accent,var(--prl-forest,#2F5B43))}
+.elementor .prl-books__tab.is-active .elementor-button{
+  background:var(--prl-accent,var(--prl-forest,#2F5B43));border-color:transparent;color:#fff;
+}
+
+/* Stream & Download icons are solid Font Awesome glyphs; fill:none left only a
+   faint edge. Fill them white instead. */
+.elementor .prl-stream__icon .elementor-icon svg{fill:#fff;stroke:none}
+.elementor .prl-stream__icon .elementor-icon i{color:#fff}
+
+/* Header mobile Menu button (Elementor Button widget with class prl-nav__toggle):
+   the 44x44 tinted square from prl-header.css lands on the widget wrapper, so it
+   sat behind the wider "Menu" button. Clear the wrapper; the tint is set on the
+   button itself in the Elementor header template. */
+.elementor-widget-button.prl-nav__toggle{
+  width:auto;height:auto;background:none;border-radius:0;padding:0;
+}
+.elementor-widget-button.prl-nav__toggle:hover{background:none}
