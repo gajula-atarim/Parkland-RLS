@@ -21,6 +21,10 @@
 		var input   = root.querySelector( '.prl-search__input' );
 		var submit  = root.querySelector( '.prl-search__submit' );
 		if ( ! modeBtn || ! menu || ! input ) { return; }
+		/* boot() re-runs on every Elementor element_ready; bind once or the
+		   button collects N click handlers and an even N leaves it closed. */
+		if ( root.getAttribute( 'data-prl-bound' ) ) { return; }
+		root.setAttribute( 'data-prl-bound', '1' );
 
 		var mode = root.getAttribute( 'data-prl-default-mode' ) || 'catalogue';
 
@@ -96,6 +100,8 @@
 	function initCarousel( root ) {
 		var slides = root.querySelectorAll( '[data-prl-slide]' );
 		if ( slides.length < 2 ) { return; }
+		if ( root.getAttribute( 'data-prl-bound' ) ) { return; }
+		root.setAttribute( 'data-prl-bound', '1' );
 		var dots  = root.querySelectorAll( '[data-prl-dot]' );
 		var prev  = root.querySelector( '[data-prl-prev]' );
 		var next  = root.querySelector( '[data-prl-next]' );
@@ -133,6 +139,8 @@
 		var tabs   = root.querySelectorAll( '[data-prl-tab]' );
 		var panels = root.querySelectorAll( '[data-prl-panel]' );
 		if ( ! tabs.length ) { return; }
+		if ( root.getAttribute( 'data-prl-bound' ) ) { return; }
+		root.setAttribute( 'data-prl-bound', '1' );
 
 		function select( key ) {
 			each( tabs, function ( t ) {
