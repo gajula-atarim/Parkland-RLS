@@ -851,7 +851,6 @@
 .elementor .prl-books__dots .prl-books__dot{width:8px;height:8px;border-radius:999px;border:0;padding:0;cursor:pointer;background:#CFCAB9;transition:width .3s,background .3s;min-height:0}
 .elementor .prl-books__dots .prl-books__dot:hover,.elementor .prl-books__dots .prl-books__dot:focus{background:#9FC48A}
 .elementor .prl-books__dots .prl-books__dot.is-active{width:24px;background:#2F5B43}
-@media (max-width:767px){.elementor .prl-books__viewport .prl-books__arrow,.elementor .prl-books__dots{display:none}}
 
 /* --- Support the library: design gradient card with faint book outlines on the
    text side, heart in the tag, 76x48 amount pills, compact badge. */
@@ -894,7 +893,6 @@
 /* Phones show all covers in a 2-up grid with no carousel, so the carousel
    wrapper must not take part in layout (it collapsed and let the Browse button
    ride up over the covers). */
-@media (max-width:767px){.prl-books__viewport{display:contents}}
 
 /* --- Office Hours status badge (text and state set by prl-home.js from the
    hours and closed days above, in Alberta time). */
@@ -1078,3 +1076,15 @@
 .elementor .e-con.prl-news__item:focus-within{outline:2px solid #9FC48A;outline-offset:4px;border-radius:6px}
 .elementor .e-con.prl-news__item:has(:focus:not(:focus-visible)){outline:none}
 @media (prefers-reduced-motion:reduce){.elementor .e-con.prl-news__item{transition:none}}
+
+/* --- New & Notable on phones: the same carousel, two covers at a time, with
+   40px arrows sitting over the cover edges and the dots below. */
+@media (max-width:767px){
+  .prl-books__viewport{position:relative;width:100%;padding:0;box-sizing:border-box}
+  .elementor .prl-books__viewport .e-con.prl-books__shelf{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+  .elementor .prl-books__viewport .e-con.prl-book.is-off{display:none}
+  .elementor .prl-books__viewport .prl-books__arrow{width:40px;height:40px;background-size:16px 16px;box-shadow:0 8px 18px -8px rgba(0,0,0,.55)}
+  .elementor .prl-books__viewport .prl-books__arrow--prev{left:-8px}
+  .elementor .prl-books__viewport .prl-books__arrow--next{right:-8px}
+  .prl-books__dots{margin-top:22px}
+}

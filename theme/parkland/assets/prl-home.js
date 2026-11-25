@@ -123,7 +123,9 @@
 	function initBookCarousel() {
 		var shelves = all( '.prl-books__shelf' );
 		if ( ! shelves.length || one( '.prl-books__viewport' ) ) { return; }
-		var VISIBLE = 3, start = 0;
+		var start = 0;
+		var phone = window.matchMedia ? window.matchMedia( '(max-width:767px)' ) : null;
+		function visible() { return phone && phone.matches ? 2 : 3; }
 
 		var vp = document.createElement( 'div' );
 		vp.className = 'prl-books__viewport';
@@ -149,6 +151,7 @@
 		}
 		function render() {
 			var books = all( '.prl-book', shelf() );
+			var VISIBLE = visible();
 			var max = Math.max( 0, books.length - VISIBLE );
 			if ( start > max ) { start = 0; }
 			books.forEach( function ( b, i ) { b.classList.toggle( 'is-off', i < start || i >= start + VISIBLE ); } );
@@ -165,7 +168,7 @@
 			}
 		}
 		function go( n ) {
-			var max = Math.max( 0, all( '.prl-book', shelf() ).length - VISIBLE );
+			var max = Math.max( 0, all( '.prl-book', shelf() ).length - visible() );
 			start = n < 0 ? max : ( n > max ? 0 : n );
 			render();
 		}
@@ -179,6 +182,10 @@
 		if ( window.MutationObserver ) {
 			var mo = new MutationObserver( function () { start = 0; render(); } );
 			shelves.forEach( function ( s ) { mo.observe( s, { attributes: true, attributeFilter: [ 'class' ] } ); } );
+		}
+		if ( phone ) {
+			var onChange = function () { start = 0; render(); };
+			if ( phone.addEventListener ) { phone.addEventListener( 'change', onChange ); } else if ( phone.addListener ) { phone.addListener( onChange ); }
 		}
 		render();
 	}
