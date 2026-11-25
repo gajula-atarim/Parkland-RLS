@@ -891,3 +891,7 @@
 .elementor .prl-donate__badge .t .elementor-heading-title{font-size:18px;font-weight:600;color:#1F3A2C}
 .elementor .prl-donate__badge .s .elementor-heading-title{font-size:13px;color:#4A4844}
 .elementor .prl-books__viewport .prl-books__arrow[hidden],.elementor .prl-books__dots[hidden]{display:none}
+/* Phones show all covers in a 2-up grid with no carousel, so the carousel
+   wrapper must not take part in layout (it collapsed and let the Browse button
+   ride up over the covers). */
+@media (max-width:767px){.prl-books__viewport{display:contents}}
