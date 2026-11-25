@@ -1016,3 +1016,44 @@
   box-shadow:0 44px 60px -28px rgba(0,0,0,.85),0 0 0 2px #9FC48A;
 }
 @media (prefers-reduced-motion:reduce){.elementor .e-con.prl-sf__shot{transition:none}}
+
+/* --- Button hovers that hid their own labels.
+   1) Theme hover rules written for a plain <button> now land on Elementor's
+      widget wrapper: the wrapper filled with the label's colour. The wrapper
+      keeps the design look; the label now changes with it.
+   2) Hello Elementor paints every real <button> #c36 on :hover/:focus. */
+.elementor .prl-select__browse{transition:background-color .2s,border-color .2s}
+.elementor .prl-select__browse:hover .elementor-button,
+.elementor .prl-select__browse:focus-within .elementor-button,
+.elementor .prl-select__browse.is-open .elementor-button{color:#fff}
+.elementor .prl-select__browse .elementor-button,
+.elementor .prl-select__browse .elementor-button:hover,
+.elementor .prl-select__browse .elementor-button:focus{background:transparent}
+
+/* Pills whose hover lives on the inner link: the wrapper must not draw a box. */
+.elementor .elementor-widget-button.prl-donate__cta:hover,
+.elementor .elementor-widget-button.prl-hero__cta:hover,
+.elementor .elementor-widget-button.prl-quotes__arrow:hover{background:none;box-shadow:none;transform:none}
+.elementor .elementor-widget-button.prl-quotes__arrow:hover{transform:translateY(-50%)}
+.elementor .prl-donate__cta .elementor-button:hover,
+.elementor .prl-donate__cta .elementor-button:focus{color:#1F3A2C}
+.elementor .prl-hero__cta .elementor-button:focus{color:#1B2B17}
+
+/* Text links built with the Button widget keep their colour on hover/focus. */
+.elementor .prl-sf__open .elementor-button:hover,.elementor .prl-sf__open .elementor-button:focus{color:#9FC48A;background:none}
+.elementor .prl-awb__more .elementor-button:hover,.elementor .prl-awb__more .elementor-button:focus{color:#fff;background:none}
+.elementor .prl-news__item .elementor-button:hover,.elementor .prl-news__item .elementor-button:focus{color:#1F3A2C;background:none;text-decoration:underline}
+.elementor .prl-donate__alt .elementor-button:hover,.elementor .prl-donate__alt .elementor-button:focus{color:#fff;background:none}
+.elementor .prl-events__tab:not(.is-active) .elementor-button:hover,
+.elementor .prl-events__tab:not(.is-active) .elementor-button:focus{background:rgba(31,58,44,.08);color:var(--prl-ink,#2B2A28)}
+.elementor .prl-events__tab.is-active .elementor-button:hover,
+.elementor .prl-events__tab.is-active .elementor-button:focus{background:var(--prl-forest-deep,#1F3A2C);color:#fff}
+
+/* Events feed audience chips are real <button>s (Hello's pink hover/focus). */
+.prl-event-feed .prl-chip{transition:border-color .2s,background-color .2s,color .2s}
+.prl-event-feed .prl-chip:hover,
+.prl-event-feed .prl-chip:focus{background:#fff;color:var(--prl-ink,#2B2A28);border-color:var(--prl-forest,#2F5B43)}
+.prl-event-feed .prl-chip.is-active,
+.prl-event-feed .prl-chip.is-active:hover,
+.prl-event-feed .prl-chip.is-active:focus{background:var(--prl-forest,#2F5B43);color:#fff;border-color:transparent}
+.prl-event-feed .prl-chip:focus:not(:focus-visible){outline:none}
