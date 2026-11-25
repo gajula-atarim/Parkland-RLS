@@ -729,6 +729,12 @@
    which beat the design's .prl-around__body padding, so copy ran to the card
    edge. Restore it (phones keep their own 20px rule below 768px). */
 .elementor .e-con.prl-around__body{padding:26px 32px 26px 22px}
+/* The column is 50% wide plus a 24px left margin (the green rule's inset), so it
+   overflowed the card by 24px and the overflow was clipped. Beside the photo it
+   takes only the remaining space. */
+@media (min-width:768px){
+  .elementor .e-con.prl-around__card > .e-con.prl-around__body{--width:auto;width:auto;flex:1 1 0;min-width:0}
+}
 @media (max-width:767px){
   .elementor .e-con.prl-around__body{padding:20px}
 }
