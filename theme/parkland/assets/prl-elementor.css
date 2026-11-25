@@ -1058,3 +1058,12 @@
 .prl-event-feed .prl-chip.is-active:hover,
 .prl-event-feed .prl-chip.is-active:focus{background:var(--prl-forest,#2F5B43);color:#fff;border-color:transparent}
 .prl-event-feed .prl-chip:focus:not(:focus-visible){outline:none}
+
+/* --- Special Features heading rhythm (PRL Home v3): the shell is a column with
+   a 26px gap, and the grid adds 22px above itself - 26px label->title and
+   48px title->tabs. The title is clamp(28px,3.2vw,44px) at 1.2. */
+.elementor .e-con.prl-sf > .e-con.prl-shell{gap:26px;align-items:center}
+.elementor .e-con.prl-sf .e-con.prl-sf__grid{padding-top:22px;margin-top:0}
+.elementor .prl-sf__title{margin:0}
+.elementor .prl-sf__title .elementor-heading-title{font-size:clamp(28px,3.2vw,44px);line-height:1.2;text-wrap:balance}
+.elementor .prl-sf__eyebrow{margin:0}
