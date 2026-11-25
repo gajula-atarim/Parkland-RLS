@@ -114,6 +114,73 @@
 	/* ---- New & Notable: three shelves, no auto-advance in the design. */
 	function initBooks() {
 		group( '.prl-books__shelf', '.prl-books__tab', 0 );
+		initBookCarousel();
+	}
+
+	/* ---- New & Notable carousel, as in PRL Home v3: three covers at a time,
+	   prev / next arrows either side and dots below. The controls are added
+	   here so the Elementor markup stays plain containers the client edits. */
+	function initBookCarousel() {
+		var shelves = all( '.prl-books__shelf' );
+		if ( ! shelves.length || one( '.prl-books__viewport' ) ) { return; }
+		var VISIBLE = 3, start = 0;
+
+		var vp = document.createElement( 'div' );
+		vp.className = 'prl-books__viewport';
+		shelves[ 0 ].parentNode.insertBefore( vp, shelves[ 0 ] );
+		shelves.forEach( function ( s ) { vp.appendChild( s ); } );
+
+		function arrow( dir, label ) {
+			var b = document.createElement( 'button' );
+			b.type = 'button';
+			b.className = 'prl-books__arrow prl-books__arrow--' + dir;
+			b.setAttribute( 'aria-label', label );
+			vp.appendChild( b );
+			return b;
+		}
+		var prev = arrow( 'prev', 'Previous titles' );
+		var next = arrow( 'next', 'Next titles' );
+		var dots = document.createElement( 'div' );
+		dots.className = 'prl-books__dots';
+		vp.parentNode.insertBefore( dots, vp.nextSibling );
+
+		function shelf() {
+			return shelves.filter( function ( s ) { return ! s.classList.contains( 'is-hidden' ); } )[ 0 ] || shelves[ 0 ];
+		}
+		function render() {
+			var books = all( '.prl-book', shelf() );
+			var max = Math.max( 0, books.length - VISIBLE );
+			if ( start > max ) { start = 0; }
+			books.forEach( function ( b, i ) { b.classList.toggle( 'is-off', i < start || i >= start + VISIBLE ); } );
+			prev.hidden = next.hidden = 0 === max;
+			dots.innerHTML = '';
+			dots.hidden = 0 === max;
+			for ( var i = 0; i <= max; i++ ) {
+				var d = document.createElement( 'button' );
+				d.type = 'button';
+				d.className = 'prl-books__dot' + ( i === start ? ' is-active' : '' );
+				d.setAttribute( 'aria-label', 'Show titles ' + ( i + 1 ) );
+				d.setAttribute( 'data-i', String( i ) );
+				dots.appendChild( d );
+			}
+		}
+		function go( n ) {
+			var max = Math.max( 0, all( '.prl-book', shelf() ).length - VISIBLE );
+			start = n < 0 ? max : ( n > max ? 0 : n );
+			render();
+		}
+		prev.addEventListener( 'click', function () { go( start - 1 ); } );
+		next.addEventListener( 'click', function () { go( start + 1 ); } );
+		dots.addEventListener( 'click', function ( e ) {
+			var d = e.target.closest( '.prl-books__dot' );
+			if ( d ) { go( parseInt( d.getAttribute( 'data-i' ), 10 ) || 0 ); }
+		} );
+		/* Switching tab shows another shelf: start it from its first title. */
+		if ( window.MutationObserver ) {
+			var mo = new MutationObserver( function () { start = 0; render(); } );
+			shelves.forEach( function ( s ) { mo.observe( s, { attributes: true, attributeFilter: [ 'class' ] } ); } );
+		}
+		render();
 	}
 
 	/* ---- Library Stories: 3 quotes, 8s, avatars double as the dots. */

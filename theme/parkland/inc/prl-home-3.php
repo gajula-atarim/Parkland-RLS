@@ -380,7 +380,8 @@ function prl_event_feed( $atts = array() ) {
 			<?php else :
 				$img = $feat['img'] ? $feat['img'] : $fallback_img; ?>
 			<div class="prl-events__grid">
-				<a class="prl-events__feature" href="<?php echo esc_url( $feat['url'] ); ?>"<?php echo $img ? ' style="background-image:url(' . esc_url( $img ) . ')"' : ''; ?>>
+				<a class="prl-events__feature" href="<?php echo esc_url( $feat['url'] ); ?>">
+					<span class="prl-events__fimg" aria-hidden="true"<?php echo $img ? ' style="background-image:url(' . esc_url( $img ) . ')"' : ''; ?>></span>
 					<span class="prl-events__date"><span class="m"><?php echo esc_html( $feat['month'] ); ?></span><span class="d"><?php echo esc_html( $feat['day'] ); ?></span></span>
 					<?php if ( $feat['is_today'] ) : ?><span class="prl-events__today"><?php esc_html_e( 'Today', 'parkland' ); ?></span><?php endif; ?>
 					<span class="prl-events__fbody">
