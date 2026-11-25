@@ -260,3 +260,244 @@ function prl_section_donate() {
 	return ob_get_clean();
 }
 add_shortcode( 'prl_donate', 'prl_section_donate' );
+
+
+/* =========================================================
+ * 7b - Events feed from The Events Calendar (added 2026-11-25).
+ *
+ * [prl_event_feed] renders the audience chips and the feature card + list
+ * from real events, so staff manage everything under Events > Add New:
+ *   - Title, date and time        -> card title, date chip, time
+ *   - Venue                       -> library name
+ *   - Event Category              -> audience (chips + small label)
+ *   - Featured image              -> feature card photo
+ *   - "Feature event" checkbox    -> pins the event as the big card
+ * The section heading, toggle and "View All Events" button stay Elementor
+ * widgets. Markup and classes match PRL Home v3, so prl-home2.css styles it
+ * and prl-home.js drives the chips and the All / Today toggle.
+ *
+ * Attributes: rows="4" (rows shown at once), limit="20" (rows loaded so the
+ * chips still have something to filter), category="" (slug, optional).
+ * ========================================================= */
+
+function prl_event_feed_audiences() {
+	$terms = get_terms( array(
+		'taxonomy'   => 'tribe_events_cat',
+		'hide_empty' => false,
+		'orderby'    => 'name',
+		'order'      => 'ASC',
+	) );
+	return ( is_array( $terms ) ) ? $terms : array();
+}
+
+function prl_event_feed_item( $event, $today ) {
+	$id        = is_object( $event ) ? $event->ID : (int) $event;
+	$start     = tribe_get_start_date( $id, false, 'Y-m-d' );
+	$end       = tribe_get_end_date( $id, false, 'Y-m-d' );
+	$all_day   = function_exists( 'tribe_event_is_all_day' ) && tribe_event_is_all_day( $id );
+	$terms     = get_the_terms( $id, 'tribe_events_cat' );
+	$aud_names = array();
+	$aud_ids   = array();
+	if ( is_array( $terms ) ) {
+		foreach ( $terms as $t ) {
+			$aud_names[] = $t->name;
+			$aud_ids[]   = (int) $t->term_id;
+		}
+	}
+	return array(
+		'id'       => $id,
+		'title'    => get_the_title( $id ),
+		'url'      => get_permalink( $id ),
+		'month'    => strtoupper( tribe_get_start_date( $id, false, 'M' ) ),
+		'day'      => tribe_get_start_date( $id, false, 'd' ),
+		'time'     => $all_day ? __( 'All day', 'parkland' ) : tribe_get_start_date( $id, false, get_option( 'time_format', 'g:i a' ) ),
+		'venue'    => function_exists( 'tribe_get_venue' ) ? wp_strip_all_tags( (string) tribe_get_venue( $id ) ) : '',
+		'aud'      => $aud_names,
+		'aud_ids'  => $aud_ids,
+		'is_today' => ( $start <= $today && $end >= $today ),
+		'img'      => get_the_post_thumbnail_url( $id, 'large' ),
+		'featured' => (bool) get_post_meta( $id, '_tribe_featured', true ),
+	);
+}
+
+function prl_event_feed( $atts = array() ) {
+	$atts = shortcode_atts( array(
+		'rows'     => 4,
+		'limit'    => 20,
+		'category' => '',
+	), $atts, 'prl_event_feed' );
+
+	if ( ! function_exists( 'tribe_get_events' ) ) {
+		return current_user_can( 'edit_posts' )
+			? '<p class="prl-events__notice">' . esc_html__( 'The Events Calendar plugin is not active, so no events can be shown.', 'parkland' ) . '</p>'
+			: '';
+	}
+
+	try {
+		$today = current_time( 'Y-m-d' );
+		$args  = array(
+			'start_date'     => $today . ' 00:00:00',
+			'eventDisplay'   => 'list',
+			'posts_per_page' => max( 1, (int) $atts['limit'] ) + 1,
+		);
+		if ( '' !== $atts['category'] ) {
+			$args['tax_query'] = array( array( 'taxonomy' => 'tribe_events_cat', 'field' => 'slug', 'terms' => $atts['category'] ) );
+		}
+		$events = tribe_get_events( $args );
+		$items  = array();
+		foreach ( (array) $events as $e ) {
+			$items[] = prl_event_feed_item( $e, $today );
+		}
+
+		/* Feature: the first upcoming event ticked "Feature event", else the first one. */
+		$feat_key = 0;
+		foreach ( $items as $k => $it ) {
+			if ( $it['featured'] ) { $feat_key = $k; break; }
+		}
+		$feat = $items ? $items[ $feat_key ] : null;
+		if ( $items ) { unset( $items[ $feat_key ] ); }
+		$rows = array_slice( array_values( $items ), 0, (int) $atts['limit'] );
+
+		$auds = prl_event_feed_audiences();
+		$index = array(); // term_id => chip index, matching prl-home.js (chip 0 is "All").
+		foreach ( $auds as $i => $t ) { $index[ (int) $t->term_id ] = $i + 1; }
+
+		$fallback_img = function_exists( 'prl_img' ) ? prl_img( 'prl-event-1', 'large' ) : '';
+		$all_url      = function_exists( 'tribe_get_events_link' ) ? tribe_get_events_link() : home_url( '/events/' );
+
+		ob_start();
+		?>
+		<div class="prl-event-feed">
+			<div class="prl-events__chips" role="group" aria-label="<?php esc_attr_e( 'Filter by audience', 'parkland' ); ?>">
+				<button type="button" class="prl-chip is-active" aria-pressed="true"><?php esc_html_e( 'All', 'parkland' ); ?></button>
+				<?php foreach ( $auds as $t ) : ?>
+					<button type="button" class="prl-chip" aria-pressed="false"><?php echo esc_html( $t->name ); ?></button>
+				<?php endforeach; ?>
+			</div>
+
+			<?php if ( ! $feat ) : ?>
+				<p class="prl-events__empty-all"><?php esc_html_e( 'No upcoming events right now. Please check back soon.', 'parkland' ); ?></p>
+			<?php else :
+				$img = $feat['img'] ? $feat['img'] : $fallback_img; ?>
+			<div class="prl-events__grid">
+				<a class="prl-events__feature" href="<?php echo esc_url( $feat['url'] ); ?>"<?php echo $img ? ' style="background-image:url(' . esc_url( $img ) . ')"' : ''; ?>>
+					<span class="prl-events__date"><span class="m"><?php echo esc_html( $feat['month'] ); ?></span><span class="d"><?php echo esc_html( $feat['day'] ); ?></span></span>
+					<?php if ( $feat['is_today'] ) : ?><span class="prl-events__today"><?php esc_html_e( 'Today', 'parkland' ); ?></span><?php endif; ?>
+					<span class="prl-events__fbody">
+						<?php if ( $feat['aud'] ) : ?><span class="prl-chip prl-chip--sm"><?php echo esc_html( $feat['aud'][0] ); ?></span><?php endif; ?>
+						<span class="prl-events__ftitle"><?php echo esc_html( $feat['title'] ); ?></span>
+						<span class="prl-events__fmeta"><?php echo esc_html( trim( $feat['time'] . '  ' . $feat['venue'] ) ); ?></span>
+						<span class="prl-events__fcta"><?php esc_html_e( 'Event details', 'parkland' ); ?> &rarr;</span>
+					</span>
+				</a>
+
+				<div class="prl-events__list" data-prl-rows="<?php echo (int) $atts['rows']; ?>">
+					<?php foreach ( $rows as $r ) :
+						$cls = array( 'prl-events__row', 'prl-ev-today-' . ( $r['is_today'] ? '1' : '0' ) );
+						foreach ( $r['aud_ids'] as $tid ) {
+							if ( isset( $index[ $tid ] ) ) { $cls[] = 'prl-ev-aud-' . $index[ $tid ]; }
+						} ?>
+						<a class="<?php echo esc_attr( implode( ' ', $cls ) ); ?>" href="<?php echo esc_url( $r['url'] ); ?>">
+							<span class="prl-events__rdate"><span class="m"><?php echo esc_html( $r['month'] ); ?></span><span class="d"><?php echo esc_html( $r['day'] ); ?></span></span>
+							<span class="prl-events__rbody">
+								<span class="prl-events__rtitle"><?php echo esc_html( $r['title'] ); ?></span>
+								<span class="prl-events__rmeta"><?php echo esc_html( $r['time'] ); ?><?php echo $r['venue'] ? ' &bull; ' . esc_html( $r['venue'] ) : ''; ?></span>
+								<?php if ( $r['aud'] ) : ?><span class="prl-chip prl-chip--sm"><?php echo esc_html( implode( ', ', $r['aud'] ) ); ?></span><?php endif; ?>
+							</span>
+							<span class="prl-events__go" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2"><path d="M5 12h14m-6-6 6 6-6 6"></path></svg></span>
+						</a>
+					<?php endforeach; ?>
+					<p class="prl-events__empty is-hidden"><?php esc_html_e( 'No upcoming events match this filter.', 'parkland' ); ?> <a href="<?php echo esc_url( $all_url ); ?>"><?php esc_html_e( 'See the full calendar', 'parkland' ); ?> &rarr;</a></p>
+				</div>
+			</div>
+			<?php endif; ?>
+		</div>
+		<?php
+		return ob_get_clean();
+	} catch ( \Throwable $e ) {
+		return current_user_can( 'edit_posts' )
+			? '<p class="prl-events__notice">' . esc_html__( 'Events could not be loaded.', 'parkland' ) . '</p>'
+			: '';
+	}
+}
+add_shortcode( 'prl_event_feed', 'prl_event_feed' );
+
+/**
+ * One-time setup on the main site: the audience categories used by the chips,
+ * plus sample events so the section is populated. Runs once (option flag) and
+ * only when The Events Calendar is active. Staff can edit or delete the samples.
+ */
+function prl_event_feed_setup() {
+	if ( get_option( 'prl_event_feed_setup' ) ) { return; }
+	if ( ! function_exists( 'tribe_create_event' ) || ! taxonomy_exists( 'tribe_events_cat' ) ) { return; }
+	if ( is_multisite() && ! is_main_site() ) { return; }
+	update_option( 'prl_event_feed_setup', 'running', false );
+
+	try {
+		$terms = array();
+		foreach ( array( 'Adult', 'All Ages', 'Babies & Toddlers', 'Families', 'Kids (2 - 6)', 'Kids (6 - 12)', 'Preteens (9 - 12 yrs)', 'Seniors', 'Teens (13 - 17 yrs)' ) as $name ) {
+			$found = get_term_by( 'name', $name, 'tribe_events_cat' );
+			if ( $found ) {
+				$terms[ $name ] = (int) $found->term_id;
+			} else {
+				$made = wp_insert_term( $name, 'tribe_events_cat' );
+				if ( ! is_wp_error( $made ) ) { $terms[ $name ] = (int) $made['term_id']; }
+			}
+		}
+
+		$have = get_posts( array( 'post_type' => 'tribe_events', 'post_status' => 'any', 'numberposts' => 1, 'fields' => 'ids' ) );
+		if ( empty( $have ) ) {
+			$venues = array();
+			$samples = array(
+				// title, days from today, start H:i, end H:i, library, audience, featured
+				array( 'Baby & Me Rhyme Time', 0, '10:30', '11:15', 'Ponoka Jubilee Library', 'Babies & Toddlers', true ),
+				array( 'Tech Help Drop-in', 0, '14:00', '16:00', 'Camrose Public Library', 'Seniors', false ),
+				array( 'Lego Club', 0, '15:30', '16:30', 'Blackfalds Public Library', 'Kids (6 - 12)', false ),
+				array( 'Story Time', 2, '10:00', '10:45', 'Innisfail Public Library', 'Kids (2 - 6)', false ),
+				array( 'Teen Gaming Night', 4, '18:30', '20:30', 'Sundre Municipal Library', 'Teens (13 - 17 yrs)', false ),
+				array( 'Winter Reads Book Club', 5, '19:00', '20:30', 'Alix Public Library', 'Adult', false ),
+				array( 'Preteen Writing Workshop', 7, '16:00', '17:30', 'Lacombe - Mary C. Moore Public Library', 'Preteens (9 - 12 yrs)', false ),
+				array( 'Family Craft Afternoon', 9, '13:00', '15:00', 'Rocky Mountain House Public Library', 'Families', false ),
+				array( 'Holiday Movie Matinee', 11, '14:00', '16:00', 'Castor Municipal Library', 'All Ages', false ),
+			);
+			$img = get_page_by_path( 'prl-event-1', OBJECT, 'attachment' );
+			$tz  = wp_timezone();
+			foreach ( $samples as $s ) {
+				list( $title, $days, $from, $to, $lib, $aud, $featured ) = $s;
+				if ( ! isset( $venues[ $lib ] ) && function_exists( 'tribe_create_venue' ) ) {
+					$venues[ $lib ] = (int) tribe_create_venue( array( 'Venue' => $lib, 'Province' => 'AB', 'Country' => 'Canada', 'post_status' => 'publish' ) );
+				}
+				$day   = ( new DateTimeImmutable( 'now', $tz ) )->modify( '+' . (int) $days . ' days' )->format( 'Y-m-d' );
+				$start = DateTimeImmutable::createFromFormat( 'Y-m-d H:i', $day . ' ' . $from, $tz );
+				$end   = DateTimeImmutable::createFromFormat( 'Y-m-d H:i', $day . ' ' . $to, $tz );
+				$args  = array(
+					'post_title'         => $title,
+					'post_content'       => 'Sample event added during setup. Edit or delete it under Events in the dashboard.',
+					'post_status'        => 'publish',
+					'EventStartDate'     => $day,
+					'EventEndDate'       => $day,
+					'EventStartHour'     => $start->format( 'h' ),
+					'EventStartMinute'   => $start->format( 'i' ),
+					'EventStartMeridian' => $start->format( 'a' ),
+					'EventEndHour'       => $end->format( 'h' ),
+					'EventEndMinute'     => $end->format( 'i' ),
+					'EventEndMeridian'   => $end->format( 'a' ),
+					'EventTimezone'      => wp_timezone_string(),
+				);
+				if ( ! empty( $venues[ $lib ] ) ) { $args['Venue'] = array( 'VenueID' => $venues[ $lib ] ); }
+				$id = tribe_create_event( $args );
+				if ( ! $id || is_wp_error( $id ) ) { continue; }
+				if ( isset( $terms[ $aud ] ) ) { wp_set_object_terms( $id, array( $terms[ $aud ] ), 'tribe_events_cat' ); }
+				if ( $featured ) {
+					// Same meta key the "Feature event" checkbox writes.
+					update_post_meta( $id, '_tribe_featured', 1 );
+					if ( $img ) { set_post_thumbnail( $id, $img->ID ); }
+				}
+			}
+		}
+		update_option( 'prl_event_feed_setup', 'done', false );
+	} catch ( \Throwable $e ) {
+		update_option( 'prl_event_feed_setup', 'failed: ' . $e->getMessage(), false );
+	}
+}
+add_action( 'init', 'prl_event_feed_setup', 99 );

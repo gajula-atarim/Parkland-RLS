@@ -179,12 +179,17 @@
 		var tabs  = all( '.prl-events__tab', sec );
 		var aud = 0, todayOnly = false;
 
+		/* The events feed (shortcode) loads more rows than the design shows so
+		   every chip has something to filter; show at most data-prl-rows. */
+		var list = one( '.prl-events__list', sec );
+		var max  = list ? ( parseInt( list.getAttribute( 'data-prl-rows' ), 10 ) || 0 ) : 0;
+
 		function apply() {
 			var shown = 0;
 			rows.forEach( function ( r ) {
 				var okA = 0 === aud || r.classList.contains( 'prl-ev-aud-' + aud );
 				var okT = ! todayOnly || r.classList.contains( 'prl-ev-today-1' );
-				var on = okA && okT;
+				var on = okA && okT && ( ! max || shown < max );
 				r.classList.toggle( 'is-hidden', ! on );
 				if ( on ) { shown++; }
 			} );

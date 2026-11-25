@@ -675,3 +675,15 @@
   width:auto;height:auto;background:none;border-radius:0;padding:0;
 }
 .elementor-widget-button.prl-nav__toggle:hover{background:none}
+
+/* Events feed ([prl_event_feed], The Events Calendar). Rows are links, not
+   Elementor containers, so the .e-con.is-hidden rule above does not reach them. */
+.prl-event-feed .is-hidden{display:none!important}
+.prl-event-feed .prl-events__row{text-decoration:none}
+.prl-event-feed .prl-events__empty{margin:4px 0 0;font-size:15px;color:#4A4844}
+.prl-event-feed .prl-events__empty a{color:var(--prl-accent,var(--prl-forest,#2F5B43));font-weight:700}
+.prl-event-feed .prl-events__empty-all,
+.prl-events__notice{
+  margin:8px 0 0;padding:28px;border:1px dashed var(--prl-rule,#DDD8C8);border-radius:16px;
+  background:#fff;text-align:center;font-size:16px;color:#4A4844;
+}
