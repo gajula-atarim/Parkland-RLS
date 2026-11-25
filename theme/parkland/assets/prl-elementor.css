@@ -1088,3 +1088,28 @@
   .elementor .prl-books__viewport .prl-books__arrow--next{right:-8px}
   .prl-books__dots{margin-top:22px}
 }
+
+/* --- Support the library, measured from PRL Home v3: text column padding
+   56/52 with a 20px rhythm, copy capped at 520px, pills 4px and actions 6px
+   lower, and a 160x54 Donate pill. The theme's .prl-donate__cta pill rule
+   also landed on Elementor's wrapper, doubling the padding - cleared here. */
+.elementor .e-con.prl-donate__card > .e-con.prl-donate__body{padding:56px 52px;gap:20px}
+.elementor .prl-donate__body > .elementor-widget{margin:0}
+.elementor .prl-donate__title .elementor-heading-title{font-size:clamp(32px,3.4vw,46px);line-height:1.08;font-weight:600}
+.elementor .prl-donate__body > .prl-donate__text{max-width:520px}
+.elementor .prl-donate__text,.elementor .prl-donate__text p{font-size:18px;line-height:1.6;margin:0}
+.elementor .e-con.prl-donate__amounts{padding-top:4px}
+.elementor .e-con.prl-donate__actions{gap:18px;padding-top:6px;align-items:center;width:auto}
+.elementor .elementor-widget-button.prl-donate__cta{
+  display:block;width:auto;height:auto;padding:0;margin:0;background:none;border-radius:0;gap:0;flex:none;
+}
+.elementor .prl-donate__cta .elementor-button{height:54px;padding:0 28px;gap:10px;font-size:16px;font-weight:700;line-height:1}
+.elementor .elementor-widget-button.prl-donate__alt{width:auto;flex:none;margin:0}
+.elementor .prl-donate__alt .elementor-button{padding:0;font-size:15px;font-weight:600}
+@media (max-width:1024px){.elementor .e-con.prl-donate__card > .e-con.prl-donate__body{padding:44px 40px}}
+@media (max-width:767px){
+  .elementor .e-con.prl-donate__card > .e-con.prl-donate__body{padding:32px 22px}
+  .elementor .e-con.prl-donate__actions{align-items:flex-start}
+  .elementor .prl-donate__cta .elementor-button{width:100%;justify-content:center}
+  .elementor .elementor-widget-button.prl-donate__cta{width:100%}
+}
