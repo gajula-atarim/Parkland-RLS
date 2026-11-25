@@ -984,3 +984,35 @@
 #prl-perks .elementor-icon-box-title a::after{content:"";position:absolute;inset:0;border-radius:12px}
 #prl-perks .elementor-icon-box-title a,#prl-perks .elementor-icon-box-title a:hover{color:#1B2B17;text-decoration:none}
 @media (max-width:767px){#prl-perks .elementor-widget-icon-box .elementor-icon-box-wrapper{justify-content:flex-start}}
+
+/* --- Special Features hover/active states, from PRL Home v3. The design keys
+   the active tab off aria-selected; the Elementor rebuild uses .is-active. */
+.elementor .e-con.prl-sf__item{
+  border:1px solid rgba(244,241,234,.14);background:transparent;
+  transition:background .35s,border-color .35s;
+}
+.elementor .e-con.prl-sf__item.is-active{background:rgba(244,241,234,.08);border-color:rgba(159,196,138,.55)}
+.elementor .e-con.prl-sf__item:hover,
+.elementor .e-con.prl-sf__item:focus-within{border-color:#9FC48A}
+.elementor .prl-sf__item .prl-sf__name .elementor-heading-title{color:#C9DBCB;transition:color .25s}
+.elementor .prl-sf__item .prl-sf__num .elementor-heading-title{color:#7F9A86;transition:color .25s}
+.elementor .prl-sf__item.is-active .prl-sf__name .elementor-heading-title,
+.elementor .prl-sf__item:hover .prl-sf__name .elementor-heading-title{color:#fff}
+.elementor .prl-sf__item.is-active .prl-sf__num .elementor-heading-title,
+.elementor .prl-sf__item:hover .prl-sf__num .elementor-heading-title{color:#9FC48A}
+
+.elementor .e-con.prl-sf__panels{
+  border:1px solid rgba(159,196,138,.55);border-radius:22px;background:rgba(244,241,234,.08);
+  transition:border-color .3s,background .3s;
+}
+.elementor .e-con.prl-sf__panels:hover{border-color:#9FC48A;background:rgba(244,241,234,.12)}
+.elementor .e-con.prl-sf__shot{
+  border-radius:14px;overflow:hidden;box-shadow:0 34px 56px -30px rgba(0,0,0,.8);
+  transition:transform .5s cubic-bezier(.2,.7,.2,1),box-shadow .5s;
+}
+.elementor .e-con.prl-sf__shot:hover,
+.elementor .e-con.prl-sf__panel:focus-within .prl-sf__shot{
+  transform:translateY(-6px) scale(1.01);
+  box-shadow:0 44px 60px -28px rgba(0,0,0,.85),0 0 0 2px #9FC48A;
+}
+@media (prefers-reduced-motion:reduce){.elementor .e-con.prl-sf__shot{transition:none}}
