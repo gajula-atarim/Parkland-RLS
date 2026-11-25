@@ -319,7 +319,46 @@
 	function initHours() {
 		var rows = all( '.prl-hours__row' );
 		if ( rows.length !== 7 ) { return; }
-		rows[ new Date().getDay() ].classList.add( 'is-today' );
+
+		/* Office time is Alberta time, whatever the visitor's clock says. */
+		var now = new Date(), parts = {};
+		try {
+			new Intl.DateTimeFormat( 'en-CA', { timeZone: 'America/Edmonton', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23', weekday: 'short' } )
+				.formatToParts( now ).forEach( function ( p ) { parts[ p.type ] = p.value; } );
+		} catch ( e ) { parts = null; }
+		var dow  = parts ? [ 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat' ].indexOf( parts.weekday ) : now.getDay();
+		var mins = parts ? ( parseInt( parts.hour, 10 ) % 24 ) * 60 + parseInt( parts.minute, 10 ) : now.getHours() * 60 + now.getMinutes();
+		var iso  = parts ? parts.year + '-' + parts.month + '-' + parts.day : '';
+		if ( dow < 0 ) { dow = now.getDay(); }
+		rows[ dow ].classList.add( 'is-today' );
+
+		/* The badge, as in the design: open / holiday / closed, read from the
+		   hours and closed days the client edits in Elementor. */
+		var status = one( '.prl-hours__status' );
+		var label  = status && ( one( '.elementor-heading-title', status ) || status );
+		if ( ! label ) { return; }
+		function toMin( t ) {
+			var m = /(\d{1,2})(?::(\d{2}))?\s*(am|pm)/i.exec( t || '' );
+			if ( ! m ) { return null; }
+			var h = parseInt( m[ 1 ], 10 ) % 12 + ( 'pm' === m[ 3 ].toLowerCase() ? 12 : 0 );
+			return h * 60 + ( parseInt( m[ 2 ] || '0', 10 ) );
+		}
+		var cells = all( '.elementor-heading-title', rows[ dow ] );
+		var text  = cells.length ? cells[ cells.length - 1 ].textContent : '';
+		var span  = text.split( /\s*[-–]\s*/ );
+		var open  = toMin( span[ 0 ] ), close = toMin( span[ 1 ] );
+		var holiday = false;
+		all( '.prl-hours__closedlist .elementor-icon-list-text' ).forEach( function ( li ) {
+			var d = new Date( li.textContent.replace( /^[A-Za-z]+,\s*/, '' ) + ' 12:00' );
+			if ( iso && ! isNaN( d ) ) {
+				var s = d.getFullYear() + '-' + ( '0' + ( d.getMonth() + 1 ) ).slice( -2 ) + '-' + ( '0' + d.getDate() ).slice( -2 );
+				if ( s === iso ) { holiday = true; }
+			}
+		} );
+		var isOpen = ! holiday && null !== open && null !== close && mins >= open && mins < close;
+		label.textContent = isOpen ? 'Open now \u00b7 until ' + span[ 1 ].trim() : ( holiday ? 'Closed today \u00b7 holiday' : 'Closed now' );
+		status.classList.toggle( 'is-open', isOpen );
+		status.classList.toggle( 'is-closed', ! isOpen );
 	}
 
 	function boot() {
