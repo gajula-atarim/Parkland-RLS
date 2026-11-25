@@ -724,3 +724,11 @@
 .prl-search .prl-search__opt:hover,
 .prl-search .prl-search__opt:focus,
 .prl-search .prl-search__opt[aria-selected="true"]{background:var(--prl-tint-100,#F1F6EE);color:inherit}
+
+/* Around Parkland cards: the text column's containers carry Elementor padding 0,
+   which beat the design's .prl-around__body padding, so copy ran to the card
+   edge. Restore it (phones keep their own 20px rule below 768px). */
+.elementor .e-con.prl-around__body{padding:26px 32px 26px 22px}
+@media (max-width:767px){
+  .elementor .e-con.prl-around__body{padding:20px}
+}
