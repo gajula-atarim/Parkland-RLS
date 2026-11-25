@@ -1117,3 +1117,35 @@
   .elementor .elementor-widget-button.prl-donate__amt{flex:1 1 0;min-width:0;width:auto;margin:0}
   .elementor .prl-donate__amt .elementor-button{width:100%;min-width:0;padding:0 6px;font-size:16px}
 }
+
+/* =========================================================
+   TABLET + PHONE LAYOUT PASS (2026-11-25).
+   ========================================================= */
+@media (min-width:768px) and (max-width:1024px){
+  /* Alberta Wide Borrowing: the column is full width on tablet, so keep the
+     desktop three-column card instead of a tall stacked link list. */
+  .elementor .e-con.prl-awb{grid-template-columns:minmax(0,.8fr) minmax(0,1fr) minmax(0,1.2fr)}
+  .elementor .e-con.prl-awb > .prl-awb__links{grid-column:auto}
+
+  /* Office Hours: weekly hours on the left, upcoming closed days on the right. */
+  .elementor .e-con.prl-hours{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:48px;row-gap:0;align-content:start}
+  .elementor .e-con.prl-hours > *{grid-column:1}
+  .elementor .e-con.prl-hours > .prl-hours__head{grid-column:1 / -1;grid-row:1}
+  .elementor .e-con.prl-hours > .prl-hours__status{grid-column:1 / -1;grid-row:2}
+  .elementor .e-con.prl-hours > .elementor-element-hr-lab2{grid-column:2;grid-row:3}
+  .elementor .e-con.prl-hours > .prl-hours__closedlist{grid-column:2;grid-row:4 / span 7;align-self:start}
+
+}
+@media (max-width:1024px){
+  /* Support the library: once the photo sits under the text its crop puts the
+     box's "DONATE" lettering at the bottom, so the badge moves to the top-left. */
+  .elementor .e-con.prl-donate__badge{top:24px;bottom:auto}
+}
+@media (max-width:767px){
+  /* Donate button and "Other ways to help" share one row after the amounts;
+     they wrap only when the screen is too narrow for both. */
+  .elementor .e-con.prl-donate__actions{flex-direction:row;flex-wrap:wrap;align-items:center;gap:14px 18px}
+  .elementor .elementor-widget-button.prl-donate__cta{width:auto}
+  .elementor .prl-donate__cta .elementor-button{width:auto;padding:0 24px}
+  .elementor .elementor-widget-button.prl-donate__alt{align-self:center}
+}
