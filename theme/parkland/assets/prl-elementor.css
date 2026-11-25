@@ -1023,6 +1023,7 @@
       keeps the design look; the label now changes with it.
    2) Hello Elementor paints every real <button> #c36 on :hover/:focus. */
 .elementor .prl-select__browse{transition:background-color .2s,border-color .2s}
+.elementor .prl-select__browse:focus-within,.elementor .prl-select__browse.is-open{background:var(--prl-accent,var(--prl-forest,#2F5B43))}
 .elementor .prl-select__browse:hover .elementor-button,
 .elementor .prl-select__browse:focus-within .elementor-button,
 .elementor .prl-select__browse.is-open .elementor-button{color:#fff}
